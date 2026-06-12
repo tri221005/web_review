@@ -1,0 +1,416 @@
+@model IEnumerable<page.Models.Destination>
+@{
+    ViewData["Title"] = "Địa Điểm Du Lịch";
+    Layout = "_Layout";
+}
+
+<!-- Hero Section for Destinations -->
+<div class="hero" style="min-height: 45vh; padding: calc(var(--nav-h) + var(--topbar-h) + 2rem) 2rem 2rem;">
+    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&q=80');"></div>
+    <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(26,26,46,0.85) 0%, rgba(198,40,40,0.6) 50%, rgba(26,26,46,0.85) 100%);"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-content text-center reveal">
+        <div class="hero-badge"><i class="bi bi-compass"></i> Khám Phá Việt Nam</div>
+        <h1 style="font-size: clamp(2.5rem, 5vw, 4rem);">Các <span>Địa Điểm</span> Tuyệt Vời</h1>
+        <p style="margin-bottom: 0;">Tìm kiếm và lựa chọn những điểm đến lý tưởng nhất cho hành trình của bạn.</p>
+    </div>
+</div>
+
+<div class="section pt-5" style="background-color: transparent; padding-bottom: 5rem; max-width: 1200px; margin: 0 auto; padding-left: 15px; padding-right: 15px;">
+    <!-- Filter Section with Glassmorphism -->
+    <div class="card border-0 mb-5 reveal-scale" style="background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+        <div class="card-body p-4">
+            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-search text-danger me-1"></i> Tìm kiếm</label>
+                    <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-lg border-0 shadow-sm" placeholder="Tên hoặc mô tả..." style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Khu vực</label>
+                    <select name="location" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                        <option value="" style="background: #111;">Tất cả khu vực</option>
+                        @if(ViewBag.Locations != null)
+                        {
+                            foreach (var loc in ViewBag.Locations)
+                            {
+                                if(!string.IsNullOrEmpty(loc))
+                                {
+                                    if(Context.Request.Query["location"] == loc)
+                                    {
+                                        <option value="@loc" selected style="background: #111;">@loc</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@loc" style="background: #111;">@loc</option>
+                                    }
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-tags-fill text-danger me-1"></i> Loại hình</label>
+                    <select name="type" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                        <option value="" style="background: #111;">Tất cả loại hình</option>
+                        @if(ViewBag.Types != null)
+                        {
+                            foreach (var type in ViewBag.Types)
+                            {
+                                if(!string.IsNullOrEmpty(type))
+                                {
+                                    if(Context.Request.Query["type"] == type)
+                                    {
+                                        <option value="@type" selected style="background: #111;">@type</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@type" style="background: #111;">@type</option>
+                                    }
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-cash-stack text-danger me-1"></i> Chi phí tối đa</label>
+                    <input type="number" name="maxCost" value="@Context.Request.Query["maxCost"]" class="form-control form-control-lg border-0 shadow-sm" placeholder="VNĐ" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                </div>
+                <div class="col-lg-1 col-md-2">
+                    <button type="submit" class="btn w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--gold); color: #000; padding: 0.75rem 0; border-radius: 12px; font-weight: bold; border: none;">
+                        <i class="bi bi-funnel-fill"></i> <span class="d-md-none ms-2">Lọc</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-4 text-end reveal">
+            <a asp-action="Create" class="btn" style="background: linear-gradient(135deg, var(--green), #1B5E20); color: white; border: none; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3); border-radius: 50px; padding: 0.6rem 1.5rem; font-weight: 500;">
+                <i class="bi bi-plus-lg me-1"></i> Thêm địa điểm mới
+            </a>
+        </div>
+    }
+
+    @{
+        var mapDestinations = ViewBag.MapDestinations as List<page.Models.Destination> ?? new List<page.Models.Destination>();
+    }
+    @if (mapDestinations.Any())
+    {
+        <div class="card border-0 mb-5 reveal-scale" style="background: rgba(20, 20, 25, 0.7); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
+            <div class="card-body p-0">
+                <div id="dest-map" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <form id="compare-form" asp-action="Compare" method="get" class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="text-muted small"><i class="bi bi-columns-gap me-1"></i>Chọn 2-3 điểm để so sánh:</span>
+            <button type="submit" class="btn btn-sm rounded-pill" style="background: var(--gold); color: #000;" id="compare-btn" disabled>So sánh</button>
+        </form>
+        <div class="d-flex align-items-center gap-2">
+            <label class="text-muted small fw-bold"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
+            <select id="sortOrder" name="sortOrder" class="form-select form-select-sm" style="background: rgba(0,0,0,0.5); color: white; border: none; width: auto;" onchange="window.location.href=this.value">
+                @{ var currentSort = ViewBag.CurrentSort as string ?? "rating_desc"; }
+                <option value="?sortOrder=rating_desc" style="background: #111;" selected="@(currentSort == "rating_desc")">Đánh giá cao nhất</option>
+                <option value="?sortOrder=rating_asc" style="background: #111;" selected="@(currentSort == "rating_asc")">Đánh giá thấp nhất</option>
+                <option value="?sortOrder=cost_asc" style="background: #111;" selected="@(currentSort == "cost_asc")">Giá rẻ nhất</option>
+                <option value="?sortOrder=cost_desc" style="background: #111;" selected="@(currentSort == "cost_desc")">Giá cao nhất</option>
+                <option value="?sortOrder=name_asc" style="background: #111;" selected="@(currentSort == "name_asc")">Tên A-Z</option>
+                <option value="?sortOrder=name_desc" style="background: #111;" selected="@(currentSort == "name_desc")">Tên Z-A</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Destinations Grid -->
+    <div class="dest-grid gs-reveal-container">
+        @foreach (var item in Model)
+        {
+            <div class="dest-card custom-dark-card gs-reveal-item" onclick="location.href='@Url.Action("Details", new { id = item.Id })'">
+                <div class="card-img-wrapper position-relative">
+                    <label class="compare-check position-absolute top-0 start-0 m-2" onclick="event.stopPropagation();" style="z-index: 5;">
+                        <input type="checkbox" name="ids" value="@item.Id" form="compare-form" class="form-check-input compare-checkbox" style="width: 18px; height: 18px;">
+                    </label>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" alt="@item.Name" loading="lazy">
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center" style="height: 220px; background: rgba(0,0,0,0.5);">
+                            <span class="text-muted opacity-50"><i class="bi bi-image" style="font-size: 3rem;"></i></span>
+                        </div>
+                    }
+                    <div class="card-img-overlay-hover">
+                        <span class="btn-glass"><i class="bi bi-eye"></i> Khám phá</span>
+                    </div>
+                </div>
+                <div class="dest-card-body d-flex flex-column" style="height: 100%;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="dest-tag glass-tag"><i class="bi bi-tag-fill me-1"></i>@item.Type</span>
+                        <span class="text-warning fw-bold glass-rating">
+                            <i class="bi bi-star-fill me-1"></i> @item.AverageRating.ToString("0.0")
+                        </span>
+                    </div>
+                    <h3 class="mt-2 text-white card-title-hover">@item.Name</h3>
+                    <p class="mb-4 text-muted-custom">
+                        @item.Description
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top-custom">
+                        <span class="fw-medium text-location">
+                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> @item.Location
+                        </span>
+                        <span class="fw-bold text-price">
+                            @if (item.EstimatedCost > 0)
+                            {
+                                @string.Format("{0:N0} đ", item.EstimatedCost)
+                            }
+                            else
+                            {
+                                <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Miễn phí</span>
+                            }
+                        </span>
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="mt-3 pt-3 border-top-custom d-flex justify-content-end gap-2" onclick="event.stopPropagation();">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-light rounded-pill px-3"><i class="bi bi-pencil me-1"></i>Sửa</a>
+                            <form asp-action="Delete" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa điểm đến này?');" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i class="bi bi-trash me-1"></i>Xóa</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 reveal-scale rounded-4 shadow-sm empty-state-custom">
+            <div class="mb-4">
+                <i class="bi bi-search text-muted opacity-25" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-white fw-bold mb-3">Không tìm thấy địa điểm nào</h4>
+            <p class="text-muted mb-4" style="color: #aaa !important;">Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc xóa bộ lọc.</p>
+            <a asp-action="Index" class="btn btn-outline-danger rounded-pill px-4" style="border-width: 2px;">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Xóa bộ lọc
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    /* Card Enhancements */
+    .custom-dark-card {
+        background: rgba(20, 20, 25, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px !important;
+        overflow: hidden;
+    }
+    .custom-dark-card:hover {
+        background: rgba(30, 30, 40, 0.8) !important;
+        border-color: rgba(212, 175, 55, 0.3) !important;
+        transform: translateY(-8px) !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important;
+    }
+    .dest-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+    }
+    .dest-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem !important;
+    }
+    
+    /* Image Overlay Hover */
+    .card-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px 20px 0 0;
+    }
+    .card-img-wrapper img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .custom-dark-card:hover .card-img-wrapper img {
+        transform: scale(1.08);
+    }
+    .card-img-overlay-hover {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    .custom-dark-card:hover .card-img-overlay-hover {
+        opacity: 1;
+    }
+    .btn-glass {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transform: translateY(20px);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .custom-dark-card:hover .btn-glass {
+        transform: translateY(0);
+    }
+
+    /* Tags & Text Styling */
+    .glass-tag {
+        background: rgba(198, 40, 40, 0.2) !important;
+        border: 1px solid rgba(198, 40, 40, 0.5);
+        color: #ffcccc !important;
+        backdrop-filter: blur(4px);
+    }
+    .glass-rating {
+        font-size: 0.85rem;
+        background: rgba(249, 168, 37, 0.15) !important;
+        padding: 0.25rem 0.75rem !important;
+        border-radius: 50px;
+        border: 1px solid rgba(249, 168, 37, 0.3);
+    }
+    .card-title-hover {
+        transition: color 0.3s ease;
+        font-weight: 700;
+    }
+    .custom-dark-card:hover .card-title-hover {
+        color: var(--gold) !important;
+    }
+    .text-muted-custom {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.6;
+    }
+    .border-top-custom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .text-location {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    .text-price {
+        font-size: 1.05rem;
+        color: var(--gold);
+    }
+
+    /* Filter Inputs */
+    .custom-dark-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 16px 12px !important;
+    }
+    .custom-dark-select:focus, input.form-control:focus {
+        background-color: rgba(0,0,0,0.8) !important;
+        color: #fff !important;
+        box-shadow: 0 0 0 0.25rem rgba(198, 40, 40, 0.3) !important;
+        border: 1px solid rgba(198, 40, 40, 0.5) !important;
+    }
+    input.form-control::placeholder {
+        color: rgba(255,255,255,0.4);
+    }
+
+    /* Empty State */
+    .empty-state-custom {
+        background: rgba(20, 20, 25, 0.5);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        margin-top: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Reveal Animations */
+    .reveal { opacity: 0; transform: translateY(30px); animation: revealAnim 0.7s ease forwards; }
+    .reveal-scale { opacity: 0; transform: scale(0.95); animation: revealScaleAnim 0.7s ease forwards; }
+    
+    @@keyframes revealAnim {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@keyframes revealScaleAnim {
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.from(".hero-content > *", {
+                y: 30, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out"
+            });
+
+            gsap.from(".reveal-scale", {
+                scale: 0.9, opacity: 0, duration: 0.8, ease: "back.out(1.2)", delay: 0.5
+            });
+
+            gsap.from(".gs-reveal-item", {
+                scrollTrigger: { trigger: ".gs-reveal-container", start: "top 85%" },
+                y: 50, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out"
+            });
+
+            const checkboxes = document.querySelectorAll('.compare-checkbox');
+            const compareBtn = document.getElementById('compare-btn');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const checked = document.querySelectorAll('.compare-checkbox:checked').length;
+                    compareBtn.disabled = checked < 2;
+                    if (checked > 3) { cb.checked = false; compareBtn.disabled = true; }
+                });
+            });
+
+            @if (mapDestinations.Any())
+            {
+                <text>
+            const map = L.map('dest-map').setView([16.0, 107.5], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            const markers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mapDestinations.Select(d => new {
+                d.Id, d.Name, d.Type, d.AverageRating, Lat = d.Latitude, Lng = d.Longitude
+            })));
+            markers.forEach(m => {
+                if (m.lat && m.lng) {
+                    L.marker([m.lat, m.lng]).addTo(map)
+                        .bindPopup(`<strong>${m.name}</strong><br>${m.type}<br>⭐ ${m.averageRating.toFixed(1)}<br><a href="/Destinations/Details/${m.id}">Xem chi tiết</a>`);
+                }
+            });
+                </text>
+            }
+        });
+    </script>
+}

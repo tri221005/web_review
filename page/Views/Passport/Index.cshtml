@@ -1,0 +1,51 @@
+@model page.Models.ViewModels.PassportViewModel
+@{
+    ViewData["Title"] = "Hộ Chiếu Xuyên Việt";
+    Layout = "_Layout";
+}
+
+<div class="section pt-4" style="max-width: 900px; margin: 0 auto; padding: 0 15px 5rem;">
+    <div class="text-center mb-5">
+        <div class="passport-cover mx-auto p-5 rounded-4 mb-4" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border: 3px solid var(--gold); max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+            <div class="text-uppercase letter-spacing-2 small text-muted mb-2">Hành Trình Việt Nam</div>
+            <h1 class="text-white fw-bold mb-1" style="font-size: 1.8rem;">HỘ CHIẾU DI SẢN</h1>
+            <div class="text-warning fw-bold fs-4 mb-3">@(Model.FullName ?? Model.UserName)</div>
+            @if (Model.HasExplorerBadge)
+            {
+                <span class="badge rounded-pill px-3 py-2" style="background: var(--gold); color: #000; font-size: 0.85rem;">
+                    <i class="bi bi-trophy-fill me-1"></i> Nhà Thám Hiểm Việt Nam
+                </span>
+            }
+        </div>
+        <p class="text-muted">@Model.TotalInteractions tương tác · Sưu tập con dấu 3 miền Bắc – Trung – Nam</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        @foreach (var stamp in Model.Stamps)
+        {
+            <div class="col-md-4">
+                <div class="card border-0 h-100 text-center p-4 @(stamp.IsEarned ? "" : "opacity-50")" style="background: rgba(20,20,25,0.8); border-radius: 20px; border: 2px @(stamp.IsEarned ? "solid var(--gold)" : "dashed rgba(255,255,255,0.15)") !important;">
+                    <div class="stamp-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 90px; height: 90px; background: @(stamp.IsEarned ? "rgba(212,175,55,0.2)" : "rgba(255,255,255,0.05)"); border: 2px solid @(stamp.IsEarned ? "var(--gold)" : "rgba(255,255,255,0.2)");">
+                        <i class="bi @stamp.Icon fs-1 @(stamp.IsEarned ? "text-warning" : "text-muted")"></i>
+                    </div>
+                    <h5 class="text-white fw-bold">@stamp.Region</h5>
+                    @if (stamp.IsEarned)
+                    {
+                        <p class="small text-muted mb-0">Qua @stamp.Source · @stamp.EarnedAt?.ToString("dd/MM/yyyy")</p>
+                    }
+                    else
+                    {
+                        <p class="small text-muted mb-0">Chưa khám phá</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted small mb-3">Lưu, đánh giá hoặc đánh dấu "Đã đến" tại bất kỳ điểm nào để nhận con dấu vùng miền.</p>
+        <a asp-controller="Destinations" asp-action="Index" class="btn rounded-pill px-4 fw-bold" style="background: var(--gold); color: #000;">
+            <i class="bi bi-compass me-1"></i> Tiếp tục khám phá
+        </a>
+    </div>
+</div>

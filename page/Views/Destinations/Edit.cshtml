@@ -1,0 +1,94 @@
+@model page.Models.Destination
+@{
+    ViewData["Title"] = "Sửa - " + Model.Name;
+    Layout = "_Layout";
+}
+
+<div class="section" style="min-height: 100vh; padding: calc(var(--nav-h) + 80px + 2rem) 1.5rem 5rem;">
+    <div class="container-fluid mx-auto" style="max-width: 900px;">
+        <div class="mb-4">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn rounded-pill" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại
+            </a>
+        </div>
+
+        <div class="card border-0" style="border-radius: 16px; background: rgba(20,20,25,0.8); border: 1px solid rgba(255,255,255,0.05) !important;">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="text-white fw-bold mb-4">Sửa điểm đến</h3>
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label text-muted small fw-bold">Tên</label>
+                        <input asp-for="Name" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label text-muted small fw-bold">Khu vực</label>
+                            <select asp-for="Location" class="form-select custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;">
+                                <option value="Miền Bắc" style="background: #111;">Miền Bắc</option>
+                                <option value="Miền Trung" style="background: #111;">Miền Trung</option>
+                                <option value="Miền Nam" style="background: #111;">Miền Nam</option>
+                                <option value="Hà Nội" style="background: #111;">Hà Nội</option>
+                                <option value="TP.HCM" style="background: #111;">TP.HCM</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Type" class="form-label text-muted small fw-bold">Loại hình</label>
+                            <select asp-for="Type" class="form-select custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;">
+                                <option value="Thiên nhiên" style="background: #111;">Thiên nhiên</option>
+                                <option value="Di tích lịch sử" style="background: #111;">Di tích lịch sử</option>
+                                <option value="Văn hóa" style="background: #111;">Văn hóa</option>
+                                <option value="Nghỉ dưỡng" style="background: #111;">Nghỉ dưỡng</option>
+                                <option value="Ẩm thực" style="background: #111;">Ẩm thực</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="EstimatedCost" class="form-label text-muted small fw-bold">Chi phí</label>
+                            <input asp-for="EstimatedCost" type="number" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Latitude" class="form-label text-muted small fw-bold">Vĩ độ</label>
+                            <input asp-for="Latitude" type="number" step="any" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Longitude" class="form-label text-muted small fw-bold">Kinh độ</label>
+                            <input asp-for="Longitude" type="number" step="any" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="LandingSceneKey" class="form-label text-muted small fw-bold">Landing Scene Key</label>
+                        <input asp-for="LandingSceneKey" class="form-control custom-dark-input" placeholder="hanoi, halong, hue..." style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Hình ảnh (URL hoặc Tải lên)</label>
+                        <div class="d-flex flex-column gap-2">
+                            <input asp-for="ImageUrl" class="form-control custom-dark-input" placeholder="Nhập đường dẫn URL (nếu có)..." style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                            <input asp-for="ImageFile" type="file" accept="image/*" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="HeritageTimelineJson" class="form-label text-muted small fw-bold">Timeline di sản (JSON)</label>
+                        <textarea asp-for="HeritageTimelineJson" rows="4" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label text-muted small fw-bold">Mô tả</label>
+                        <textarea asp-for="Description" rows="5" class="form-control custom-dark-input" style="background: rgba(0,0,0,0.5); color: white; border: none;"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger rounded-pill">Xóa</a>
+                        <button type="submit" class="btn rounded-pill px-4 fw-bold" style="background: var(--gold); color: #000;">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

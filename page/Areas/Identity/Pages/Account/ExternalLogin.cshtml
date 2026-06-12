@@ -1,0 +1,161 @@
+@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Xác nhận Đăng nhập";
+}
+
+<style>
+    .auth-fullscreen-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: url('/images/vietnam_intro.png') center/cover no-repeat;
+        z-index: 1050;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .auth-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .glass-card {
+        background: rgba(15, 15, 15, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        padding: 3.5rem;
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        z-index: 1051;
+        color: #fff;
+        animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    @@keyframes slideUpFade {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .glass-card h3 {
+        font-family: 'Be Vietnam Pro', sans-serif;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #d4af37;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+    }
+
+    .form-floating .form-control {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff !important;
+        border-radius: 12px;
+    }
+    
+    .form-floating .form-control:focus {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: #d4af37;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.2);
+    }
+
+    .form-floating label {
+        color: #999;
+    }
+
+    .form-floating .form-control:focus ~ label,
+    .form-floating .form-control:not(:placeholder-shown) ~ label {
+        color: #d4af37;
+        transform: scale(0.85) translateY(-0.75rem) translateX(0.15rem);
+    }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+        color: #000;
+        font-weight: 700;
+        border: none;
+        padding: 1rem;
+        border-radius: 50px;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-gold:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4);
+        color: #000;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        z-index: 1052;
+    }
+
+    .back-btn:hover {
+        opacity: 1;
+        color: #d4af37;
+        transform: translateX(-5px);
+    }
+</style>
+
+<div class="auth-fullscreen-bg">
+    <div class="auth-overlay"></div>
+    <a href="/" class="back-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Trở Về
+    </a>
+
+    <div class="glass-card">
+        <h3>@ViewData["Title"]</h3>
+        <p id="external-login-description" class="text-center text-light mb-4">
+            Bạn đã xác thực thành công với <strong>@Model.ProviderDisplayName</strong>.<br/>
+            Vui lòng nhập/xác nhận email để hoàn tất đăng ký.
+        </p>
+
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+            
+            <div class="form-floating mb-4">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="name@example.com"/>
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+            </div>
+            
+            <button type="submit" class="w-100 btn btn-gold mb-3">HOÀN TẤT ĐĂNG KÝ</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
