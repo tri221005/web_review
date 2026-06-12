@@ -1,0 +1,123 @@
+@model page.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="section pt-4" style="max-width: 1200px; margin: 0 auto; padding: 0 15px 5rem;">
+    <h1 class="text-white fw-bold mb-4"><i class="bi bi-shield-lock text-warning me-2"></i>Admin Dashboard</h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card border-0 text-center p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="fs-1 text-warning"><i class="bi bi-geo-alt-fill"></i></div>
+                <div class="fw-bold text-white fs-3">@Model.TotalDestinations</div>
+                <div class="small text-muted">Điểm đến</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 text-center p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="fs-1 text-info"><i class="bi bi-people-fill"></i></div>
+                <div class="fw-bold text-white fs-3">@Model.TotalUsers</div>
+                <div class="small text-muted">Người dùng</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 text-center p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="fs-1 text-warning"><i class="bi bi-star-fill"></i></div>
+                <div class="fw-bold text-white fs-3">@Model.AverageRating.ToString("0.0")</div>
+                <div class="small text-muted">Đánh giá TB (@Model.TotalReviews)</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 text-center p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="fs-1 text-success"><i class="bi bi-journal-text"></i></div>
+                <div class="fw-bold text-white fs-3">@Model.TotalStories</div>
+                <div class="small text-muted">Câu chuyện</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card border-0 p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <h5 class="text-white fw-bold mb-3"><i class="bi bi-trophy text-warning me-2"></i>Top điểm đến</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-borderless mb-0">
+                        <thead><tr><th>Tên</th><th>Rating</th><th>Đánh giá</th><th>Chi phí</th></tr></thead>
+                        <tbody>
+                            @foreach (var d in Model.TopDestinations)
+                            {
+                                <tr>
+                                    <td><a asp-controller="Destinations" asp-action="Details" asp-route-id="@d.Id" class="text-white text-decoration-none">@d.Name</a></td>
+                                    <td class="text-warning">@d.AverageRating.ToString("0.0")</td>
+                                    <td>@d.ReviewCount</td>
+                                    <td>@string.Format("{0:N0} đ", d.EstimatedCost)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card border-0 p-4 h-100" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <h5 class="text-white fw-bold mb-3"><i class="bi bi-people text-info me-2"></i>Người dùng gần đây</h5>
+                <div style="max-height: 350px; overflow-y: auto;">
+                    @foreach (var u in Model.RecentUsers)
+                    {
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded-3 mb-1" style="background: rgba(0,0,0,0.3);">
+                            <div>
+                                <div class="small text-white fw-bold">@u.UserName</div>
+                                <div class="small text-muted">@u.Email · @u.ReviewCount đánh giá · @u.StoryCount stories</div>
+                            </div>
+                            <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Xóa người dùng này?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@u.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill py-0 px-2"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.PendingDestinations.Any())
+    {
+        <div class="card border-0 p-4 mt-4" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+            <h5 class="text-white fw-bold mb-3"><i class="bi bi-clock-history text-danger me-2"></i>Điểm đến chờ duyệt (@Model.PendingDestinations.Count)</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-borderless mb-0 align-middle">
+                    <thead><tr><th>Tên</th><th>Người đăng</th><th>Chi tiết</th><th>Hành động</th></tr></thead>
+                    <tbody>
+                        @foreach (var d in Model.PendingDestinations)
+                        {
+                            <tr>
+                                <td>@d.Name</td>
+                                <td><span class="badge bg-secondary">@(d.SubmittedByUser?.UserName ?? "Admin")</span></td>
+                                <td><a asp-controller="Destinations" asp-action="Details" asp-route-id="@d.Id" class="text-info text-decoration-none" target="_blank">Xem chi tiết <i class="bi bi-box-arrow-up-right"></i></a></td>
+                                <td>
+                                    <form asp-action="ApproveDestination" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@d.Id" />
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3">Duyệt ngay</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

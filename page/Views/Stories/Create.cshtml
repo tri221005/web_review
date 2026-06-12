@@ -1,0 +1,47 @@
+@model page.Models.TravelStory
+@{
+    ViewData["Title"] = "Viết Câu Chuyện";
+    Layout = "_Layout";
+    var destinations = ViewBag.Destinations as List<page.Models.Destination> ?? new List<page.Models.Destination>();
+}
+
+<div class="section pt-4" style="max-width: 700px; margin: 0 auto; padding: 0 15px 5rem;">
+    <h1 class="text-white fw-bold mb-4 text-center">Viết Câu Chuyện Du Lịch</h1>
+    <div class="card border-0 p-4 p-md-5" style="background: rgba(20,20,25,0.8); border-radius: 16px;">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="alert alert-danger" style="background: rgba(220, 53, 69, 0.2); border: 1px solid var(--red); color: white;"></div>
+            }
+
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold">Điểm đến</label>
+                <select asp-for="DestinationId" class="form-select" style="background: rgba(0,0,0,0.5); color: white; border: none;">
+                    <option value="0">-- Chọn điểm đến --</option>
+                    @foreach (var d in destinations)
+                    {
+                        <option value="@d.Id">@d.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label text-muted small fw-bold">Tiêu đề</label>
+                <input asp-for="Title" class="form-control" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold">Ảnh đại diện (tải lên)</label>
+                <input type="file" name="imageFile" accept="image/*" class="form-control" style="background: rgba(0,0,0,0.5); color: white; border: none;">
+            </div>
+            <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label text-muted small fw-bold">Hoặc URL ảnh từ web</label>
+                <input asp-for="ImageUrl" class="form-control" style="background: rgba(0,0,0,0.5); color: white; border: none;" />
+            </div>
+            <div class="mb-4">
+                <label asp-for="Content" class="form-label text-muted small fw-bold">Nội dung</label>
+                <textarea asp-for="Content" rows="8" class="form-control" style="background: rgba(0,0,0,0.5); color: white; border: none;"></textarea>
+            </div>
+            <button type="submit" class="btn w-100 rounded-pill py-2 fw-bold" style="background: var(--gold); color: #000;">Đăng câu chuyện</button>
+        </form>
+    </div>
+</div>

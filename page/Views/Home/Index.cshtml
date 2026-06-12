@@ -1,0 +1,693 @@
+@model page.Models.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Việt Nam - Hành Trình Di Sản";
+    Layout = "_LandingLayout";
+    var sceneLinksJson = System.Text.Json.JsonSerializer.Serialize(Model.SceneLinks);
+}
+
+<!-- PRELOADER -->
+<div id="preloader">
+    <div class="loader-content">
+        <h2 class="loader-title">VIỆT NAM</h2>
+        <div class="progress-bar"><div class="progress" id="progress-bar"></div></div>
+        <div class="loading-text">ĐANG TẢI...</div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="premium-nav" id="navbar">
+    <div class="nav-brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>Việt Nam</span>
+    </div>
+    <button class="mobile-nav-toggle" id="landingNavToggle" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 1001;">
+        <i class="bi bi-list"></i>
+    </button>
+    <ul class="nav-links" id="landingNavLinks">
+        <li><a href="/Destinations" class="btn-outline">Khám Phá Điểm Đến</a></li>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <li><a href="/Profile">Hồ Sơ</a></li>
+            <li>
+                <form class="form-inline m-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" style="display:inline;">
+                    <button type="submit" class="nav-logout-btn">Đăng Xuất</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li><a href="/Identity/Account/Login">Đăng Nhập</a></li>
+            <li><a href="/Identity/Account/Register">Đăng Ký</a></li>
+        }
+    </ul>
+    <style>
+        @@media (max-width: 767px) {
+            #landingNavLinks { display: none; position: fixed; top: 70px; left: 0; width: 100%; flex-direction: column; background: rgba(0,0,0,0.98); backdrop-filter: blur(12px); padding: 1.5rem; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1000; margin: 0; }
+            #landingNavLinks.show { display: flex !important; }
+            #landingNavLinks li { width: 100%; text-align: center; }
+        }
+        @@media (min-width: 768px) {
+            #landingNavToggle { display: none !important; }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggle = document.getElementById('landingNavToggle');
+            var navLinks = document.getElementById('landingNavLinks');
+            if (toggle && navLinks) {
+                toggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                    var icon = toggle.querySelector('i');
+                    if (icon) { icon.classList.toggle('bi-list'); icon.classList.toggle('bi-x-lg'); }
+                });
+            }
+        });
+    </script>
+</nav>
+
+<!-- FIXED VIDEO BACKGROUNDS -->
+<div id="media-container">
+    <!-- 1. Intro Việt Nam -->
+    <img id="vid-1" src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&q=80" class="bg-video" alt="Vietnam Intro">
+    <!-- 2. Hà Nội -->
+    <video id="vid-2" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/hanoi.mp4" type="video/mp4">
+    </video>
+    <!-- 3. Vịnh Hạ Long -->
+    <video id="vid-3" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/vinhhalong.mp4" type="video/mp4">
+    </video>
+    <!-- 4. Huế -->
+    <video id="vid-4" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/heu.mp4" type="video/mp4">
+    </video>
+    <!-- 5. Hội An -->
+    <video id="vid-5" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/hoian.mp4" type="video/mp4">
+    </video>
+    <!-- 6. Đà Lạt -->
+    <video id="vid-6" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/datlat.mp4" type="video/mp4">
+    </video>
+    <!-- 7. TP.HCM -->
+    <video id="vid-7" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/hcm.mp4" type="video/mp4">
+    </video>
+    <!-- 8. Phú Quốc -->
+    <video id="vid-8" loop muted playsinline class="bg-video" preload="none">
+        <source src="/videos/phuquoc.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Gradient Overlay to make text pop -->
+    <div class="vignette-overlay"></div>
+</div>
+
+<!-- SCROLLING CONTENT -->
+<main class="scroll-content">
+    
+    <!-- 1. HERO / INTRO -->
+    <section class="story-panel align-center" id="scene-1">
+        <div class="hero-content">
+            <h1 class="hero-title">VIỆT NAM</h1>
+            <p class="hero-subtitle">Hành Trình Chạm Vào Di Sản</p>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <p>Cuộn xuống</p>
+        </div>
+    </section>
+
+    <!-- 2. HÀ NỘI -->
+    <section class="story-panel align-left" id="scene-2">
+        <div class="glass-card">
+            <div class="chapter">Chương 01 / Thủ Đô</div>
+            <h2>Hà Nội<br><span>Ngàn Năm Văn Hiến</span></h2>
+            <p>Nhịp sống phố cổ đan xen giữa sự hối hả hiện đại và nét trầm mặc của lịch sử. Dạo bước qua 36 phố phường, thưởng thức tách cà phê trứng và cảm nhận nhịp đập của thủ đô.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="hanoi">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. VỊNH HẠ LONG -->
+    <section class="story-panel align-right" id="scene-3">
+        <div class="glass-card">
+            <div class="chapter">Chương 02 / Di Sản Thiên Nhiên</div>
+            <h2>Vịnh Hạ Long<br><span>Kỳ Quan Biển Cả</span></h2>
+            <p>Hàng ngàn hòn đảo đá vôi vươn lên từ mặt nước xanh ngọc bích. Một bức tranh thủy mặc vĩ đại mà thiên nhiên ban tặng, mang đến sự choáng ngợp và yên bình.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-3">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="halong">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. HUẾ -->
+    <section class="story-panel align-left" id="scene-4">
+        <div class="glass-card">
+            <div class="chapter">Chương 03 / Cố Đô</div>
+            <h2>Huế<br><span>Dấu Ấn Thời Gian</span></h2>
+            <p>Lăng tẩm uy nghi, Đại Nội trầm mặc và dòng Hương Giang lững lờ trôi. Nơi lưu giữ trọn vẹn hồn cốt của những triều đại huy hoàng xưa cũ.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-4">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="hue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. HỘI AN -->
+    <section class="story-panel align-right" id="scene-5">
+        <div class="glass-card">
+            <div class="chapter">Chương 04 / Phố Cổ</div>
+            <h2>Hội An<br><span>Đêm Lung Linh</span></h2>
+            <p>Những nếp nhà ngói rêu phong và con hẻm rực rỡ sắc lồng đèn. Hội An đưa ta về một thời thương cảng sầm uất, lãng mạn và đầy hoài niệm.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-5">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="hoian">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. ĐÀ LẠT -->
+    <section class="story-panel align-left" id="scene-6">
+        <div class="glass-card">
+            <div class="chapter">Chương 05 / Cao Nguyên</div>
+            <h2>Đà Lạt<br><span>Thành Phố Ngàn Hoa</span></h2>
+            <p>Ẩn mình trong sương sớm và những đồi thông reo. Đà Lạt mang nhịp thở của sự lãng mạn, thanh bình, làm xao xuyến bất cứ ai đặt chân đến.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-6">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="dalat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. TP.HCM -->
+    <section class="story-panel align-right" id="scene-7">
+        <div class="glass-card">
+            <div class="chapter">Chương 06 / Đô Thị</div>
+            <h2>TP.HCM<br><span>Thành Phố Không Ngủ</span></h2>
+            <p>Sự chuyển mình mạnh mẽ của một trung tâm kinh tế năng động. Rực rỡ ánh đèn về đêm, Sài Gòn là bản giao hưởng của sự trẻ trung và sáng tạo.</p>
+            <div class="action-buttons">
+                <button class="btn-play-video" data-target="vid-7">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="hcm">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. PHÚ QUỐC & CTA -->
+    <section class="story-panel align-center" id="scene-8">
+        <div class="glass-card text-center" style="max-width: 600px;">
+            <div class="chapter">Chương Cuối / Biển Đảo</div>
+            <h2>Phú Quốc<br><span>Đảo Ngọc Gọi Mời</span></h2>
+            <p>Khép lại hành trình với tiếng sóng vỗ rì rào và bầu trời hoàng hôn rực lửa. Tận hưởng không gian bình yên và tái tạo năng lượng.</p>
+            <div class="action-buttons" style="justify-content: center;">
+                <button class="btn-play-video" data-target="vid-8">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Xem Video
+                </button>
+                <button class="btn-history" data-location="phuquoc">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Tìm Hiểu Lịch Sử
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- HISTORY MODAL -->
+    <div id="history-modal" class="history-modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-card">
+            <button class="close-modal">&times;</button>
+            <h3 id="modal-title"></h3>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- SOLID BACKGROUND AREA (FOOTER) -->
+    <div class="solid-wrapper" id="footer-area">
+        @if (Model.RecentStories.Any())
+        {
+            <section class="stories-preview" style="padding: 4rem 5%; max-width: 1200px; margin: 0 auto;">
+                <h2 style="color: #fff; font-weight: 800; margin-bottom: 2rem; text-align: center;">Câu Chuyện Từ Du Khách</h2>
+                <div class="row g-4">
+                    @foreach (var story in Model.RecentStories)
+                    {
+                        <div class="col-md-4">
+                            <div class="glass-card p-4 h-100" style="border-radius: 16px;">
+                                <div class="small text-muted mb-2">@(story.Destination?.Name)</div>
+                                <h5 style="color: #fff; font-weight: 700;">@story.Title</h5>
+                                <p style="color: #aaa; font-size: 0.9rem;">@(story.Content.Length > 100 ? story.Content.Substring(0, 100) + "..." : story.Content)</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="text-center mt-4">
+                    <a href="/Stories" class="btn-solid">Xem tất cả câu chuyện</a>
+                </div>
+            </section>
+        }
+        <footer class="premium-footer">
+            <div class="footer-content">
+                <div class="logo-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <h2>Sẵn Sàng Khám Phá?</h2>
+                <p>Hàng trăm điểm đến và vô vàn câu chuyện văn hóa đang chờ bạn.</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Hành Trình Việt Nam. Mọi quyền được bảo lưu.</p>
+            </div>
+        </footer>
+    </div>
+</main>
+
+@section Scripts {
+<script>
+// --- SMOOTH SCROLL (LENIS) ---
+const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 1,
+    touchMultiplier: 2,
+});
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// --- PRELOADER ---
+document.addEventListener("DOMContentLoaded", () => {
+    const preloader = document.getElementById("preloader");
+    const progressBar = document.getElementById("progress-bar");
+    
+    let width = 0;
+    const interval = setInterval(() => {
+        width += 10;
+        progressBar.style.width = width + "%";
+        if (width >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                preloader.classList.add("hidden");
+                
+                // Show first background image automatically
+                const firstMedia = document.getElementById('vid-1');
+                gsap.to(firstMedia, { opacity: 1, duration: 1.5, ease: "power2.inOut" });
+            }, 500);
+        }
+    }, 50);
+});
+
+// --- GSAP & CLICK-TO-PLAY LOGIC ---
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Sync Lenis with GSAP
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0, 0);
+
+    // Navbar Scroll Effect
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // Hero Parallax Fade
+    gsap.to(".hero-content", {
+        scrollTrigger: {
+            trigger: "#scene-1",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        },
+        opacity: 0,
+        y: -100
+    });
+
+    // Glass Card Fade-up Animations
+    const totalScenes = 8;
+    for (let i = 2; i <= totalScenes; i++) {
+        const card = document.querySelector(`#scene-${i} .glass-card`);
+        if (card) {
+            gsap.fromTo(card, 
+                { y: 100, opacity: 0 },
+                { 
+                    scrollTrigger: {
+                        trigger: `#scene-${i}`,
+                        start: "top 80%",
+                        end: "center center",
+                        scrub: 1
+                    },
+                    y: 0, 
+                    opacity: 1
+                }
+            );
+        }
+    }
+    
+    // Stop fixed video background from covering footer (Removed incorrect ScrollTrigger)
+
+    // --- HISTORY MODAL LOGIC ---
+    const historyData = {
+        hanoi: {
+            title: "Lịch Sử Hà Nội",
+            content: "Được vua Lý Thái Tổ chọn làm kinh đô từ năm 1010 với tên gọi Thăng Long, Hà Nội tự hào trải qua hơn 1000 năm lịch sử hào hùng. Trải qua bao thăng trầm của các triều đại phong kiến, thời kỳ thuộc địa và những năm tháng kháng chiến, Hà Nội vẫn giữ vững vị thế là trái tim của cả nước, nơi hội tụ kết tinh tinh hoa văn hóa dân tộc."
+        },
+        halong: {
+            title: "Lịch Sử Vịnh Hạ Long",
+            content: "Nằm ở bờ Tây Vịnh Bắc Bộ, Vịnh Hạ Long được hình thành từ hàng triệu năm trước qua quá trình vận động địa chất phức tạp. Truyền thuyết kể rằng, Ngọc Hoàng sai rồng mẹ mang theo một đàn rồng con xuống hạ giới giúp người Việt đánh giặc ngoại xâm. Đàn rồng phun ra vô số châu ngọc, biến thành những đảo đá vôi, trở thành bức tường thành vững chắc cản bước quân thù."
+        },
+        hue: {
+            title: "Lịch Sử Huế",
+            content: "Phú Xuân (Huế) từng là thủ phủ của các chúa Nguyễn ở Đàng Trong, sau đó trở thành kinh đô của triều đại Tây Sơn, và cuối cùng là vương triều nhà Nguyễn (1802-1945). Mảnh đất cố đô mang trong mình những di sản kiến trúc đồ sộ, hệ thống lăng tẩm uy nghi và một nền văn hóa cung đình đặc sắc, được UNESCO công nhận là Di sản Văn hóa Thế giới."
+        },
+        hoian: {
+            title: "Lịch Sử Hội An",
+            content: "Ra đời vào khoảng thế kỷ 16-17, Hội An từng là một thương cảng quốc tế sầm uất bậc nhất Đông Nam Á, nơi giao thương của các thương nhân Nhật Bản, Trung Quốc và phương Tây. Dù trải qua nhiều biến cố lịch sử, Hội An may mắn giữ lại gần như nguyên vẹn quần thể kiến trúc phố cổ xưa, hòa quyện giữa các nền văn hóa đa dạng."
+        },
+        dalat: {
+            title: "Lịch Sử Đà Lạt",
+            content: "Được bác sĩ Alexandre Yersin khám phá vào năm 1893, Đà Lạt nhanh chóng được người Pháp xây dựng thành một trung tâm nghỉ dưỡng cao cấp tại Đông Dương. Trải qua hơn một thế kỷ, Đà Lạt vẫn giữ được vẻ đẹp lãng mạn của một \"Tiểu Paris\", với những dinh thự cổ kính ẩn mình giữa rừng thông và ngàn hoa khoe sắc."
+        },
+        hcm: {
+            title: "Lịch Sử TP. Hồ Chí Minh",
+            content: "Khởi đầu từ một vùng đất hoang vu, Sài Gòn nhanh chóng phát triển dưới thời các chúa Nguyễn và trở thành \"Hòn ngọc Viễn Đông\" sầm uất dưới thời Pháp thuộc. Ngày nay, TP.HCM là đầu tàu kinh tế của cả nước, biểu tượng của sự năng động, hiện đại và không ngừng vươn lên."
+        },
+        phuquoc: {
+            title: "Lịch Sử Phú Quốc",
+            content: "Được mệnh danh là \"Đảo Ngọc\", Phú Quốc từ lâu đã là vùng lãnh thổ thiêng liêng của tổ quốc. Trải qua những năm tháng lịch sử hào hùng, từ căn cứ chống Pháp của Nguyễn Trung Trực đến nhà tù Phú Quốc thời chiến, hòn đảo ngày nay đã chuyển mình trở thành một trung tâm du lịch nghỉ dưỡng đẳng cấp quốc tế."
+        }
+    };
+
+    const historyModal = document.getElementById('history-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const closeBtn = document.querySelector('.close-modal');
+    const backdrop = document.querySelector('.modal-backdrop');
+
+    const sceneLinks = @Html.Raw(sceneLinksJson);
+
+    function openModal(location) {
+        if(historyData[location]) {
+            modalTitle.textContent = historyData[location].title;
+            let bodyHtml = `<p>${historyData[location].content}</p>`;
+            if (sceneLinks[location] && sceneLinks[location].destinationId) {
+                bodyHtml += `<a href="/Destinations/Details/${sceneLinks[location].destinationId}" class="btn-solid" style="display:inline-block;margin-top:1.5rem;text-decoration:none;">Khám phá ${sceneLinks[location].destinationName}</a>`;
+            } else {
+                bodyHtml += `<a href="/Destinations" class="btn-solid" style="display:inline-block;margin-top:1.5rem;text-decoration:none;">Khám phá điểm đến</a>`;
+            }
+            modalBody.innerHTML = bodyHtml;
+            historyModal.classList.remove('hidden');
+            if (typeof lenis !== 'undefined') lenis.stop();
+        }
+    }
+
+    function closeModal() {
+        historyModal.classList.add('hidden');
+        if (typeof lenis !== 'undefined') lenis.start();
+    }
+
+    document.querySelectorAll('.btn-history').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const loc = this.getAttribute('data-location');
+            openModal(loc);
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+
+    // --- CLICK TO PLAY LOGIC ---
+    const playButtons = document.querySelectorAll('.btn-play-video');
+    playButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            
+            // Toggle button states
+            playButtons.forEach(b => b.classList.remove('playing'));
+            this.classList.add('playing');
+
+            // Handle videos and images
+            for (let v = 1; v <= totalScenes; v++) {
+                const media = document.getElementById(`vid-${v}`);
+                if (`vid-${v}` === targetId) {
+                    if (media.tagName.toLowerCase() === 'video') {
+                        media.play().catch(e => console.log("Play failed:", e));
+                    }
+                    gsap.to(media, { opacity: 1, duration: 1.5, ease: "power2.inOut" });
+                } else {
+                    gsap.to(media, { opacity: 0, duration: 1.5, ease: "power2.inOut", onComplete: () => {
+                        if (media.tagName.toLowerCase() === 'video') {
+                            media.pause();
+                            media.currentTime = 0; // optional reset
+                        }
+                    }});
+                }
+            }
+        });
+    });
+}
+</script>
+}
+
+<style>
+/* COLOR PALETTE & RESET */
+:root {
+    --gold: #d4af37;
+    --dark-bg: #050505;
+    --text-light: #f5f5f7;
+    --glass-bg: rgba(10, 10, 10, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0; padding: 0;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    overflow-x: hidden;
+}
+
+/* PRELOADER */
+#preloader {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #000; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 1s ease, visibility 1s ease;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; }
+.loader-content { text-align: center; width: 300px; }
+.loader-title { font-size: 2rem; letter-spacing: 0.3em; color: #fff; margin-bottom: 2rem; }
+.progress-bar { width: 100%; height: 2px; background: #333; margin-bottom: 1rem; overflow: hidden; }
+.progress { width: 0%; height: 100%; background: var(--gold); transition: width 0.1s linear; }
+.loading-text { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* NAVBAR */
+.premium-nav {
+    position: fixed; top: 0; left: 0; width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 2rem 5%; z-index: 1000;
+    transition: all 0.4s ease; box-sizing: border-box;
+}
+.premium-nav.scrolled {
+    padding: 1rem 5%; background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.2rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #fff;
+}
+.nav-brand svg { color: var(--gold); }
+.nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; align-items: center; }
+.nav-links a, .nav-logout-btn { color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease; }
+.nav-logout-btn { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+.nav-links a:hover, .nav-logout-btn:hover { color: var(--gold); }
+.btn-outline { border: 1px solid var(--gold); padding: 0.6rem 1.2rem; border-radius: 50px; color: var(--gold) !important; }
+.btn-outline:hover { background: var(--gold); color: #000 !important; }
+
+/* FIXED MEDIA BACKGROUND */
+#media-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0; background: #000;
+}
+.bg-video {
+    position: absolute; top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0;
+    z-index: 1;
+}
+.vignette-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none; z-index: 2;
+}
+
+/* SCROLL CONTENT CONTAINER */
+.scroll-content { position: relative; z-index: 10; pointer-events: none; }
+.glass-card, .solid-wrapper, .premium-nav, #preloader, .btn-solid, .btn-play-video { pointer-events: auto; }
+
+/* HERO SECTION */
+.hero-content { text-align: center; }
+.badge {
+    display: inline-block; padding: 0.5rem 1rem;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 50px;
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em;
+    margin-bottom: 2rem; backdrop-filter: blur(5px); color: #fff;
+}
+.hero-title {
+    font-size: 8vw; font-weight: 900; letter-spacing: 0.2em;
+    margin: 0; background: linear-gradient(180deg, #ffffff 0%, #a0a0a0 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
+.hero-subtitle {
+    font-size: 1.5rem; font-weight: 300; letter-spacing: 0.5em;
+    color: var(--gold); text-transform: uppercase; margin-top: -10px;
+}
+.scroll-indicator {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; opacity: 0.7;
+}
+.mouse { width: 24px; height: 36px; border: 2px solid #fff; border-radius: 12px; position: relative; }
+.mouse::before {
+    content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 6px; background: #fff; border-radius: 2px;
+    @@keyframes scroll-anim { 0% { transform: translate(-50%, 0); opacity: 1; } 100% { transform: translate(-50%, 15px); opacity: 0; } }
+    animation: scroll-anim 2s infinite;
+}
+
+/* STORY PANELS */
+.story-panel { min-height: 100vh; display: flex; align-items: center; padding: 0 10vw; position: relative; }
+.story-panel.align-left { justify-content: flex-start; }
+.story-panel.align-right { justify-content: flex-end; }
+.story-panel.align-center { justify-content: center; }
+
+/* GLASSMORPHISM CARD */
+.glass-card {
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); padding: 4rem; border-radius: 24px;
+    max-width: 500px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    transition: border-color 0.3s ease;
+}
+.glass-card:hover { border-color: rgba(212, 175, 55, 0.5); }
+.glass-card.text-center { text-align: center; }
+.chapter {
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 1.5rem;
+    display: inline-block; border-bottom: 1px solid var(--gold); padding-bottom: 0.5rem;
+}
+.glass-card h2 { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; color: #fff; }
+.glass-card h2 span { color: var(--gold); font-style: italic; font-weight: 300; }
+.glass-card p { font-size: 1.15rem; line-height: 1.8; color: #cccccc; margin: 0; }
+
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; align-items: center;
+}
+.btn-play-video, .btn-history {
+    background: transparent; border: 1px solid var(--gold);
+    color: var(--gold); padding: 0.8rem 1.5rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; text-transform: uppercase;
+    letter-spacing: 0.1em; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.3s ease; font-family: inherit; margin: 0;
+}
+.btn-history {
+    border-color: rgba(255, 255, 255, 0.3); color: #fff;
+}
+.btn-history:hover {
+    background: rgba(255, 255, 255, 0.1); border-color: #fff;
+}
+.btn-play-video:hover { background: var(--gold); color: #000; }
+.btn-play-video.playing { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+
+/* HISTORY MODAL */
+.history-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 99999; display: flex; align-items: center; justify-content: center;
+    opacity: 1; visibility: visible; transition: all 0.3s ease;
+}
+.history-modal.hidden {
+    opacity: 0; visibility: hidden; pointer-events: none;
+}
+.modal-backdrop {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+}
+.history-modal .modal-content {
+    position: relative; z-index: 100000; max-width: 600px; width: 90%;
+    padding: 3rem; transform: translateY(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.history-modal.hidden .modal-content {
+    transform: translateY(50px);
+}
+.close-modal {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none; color: #fff; font-size: 2rem;
+    cursor: pointer; line-height: 1; transition: color 0.3s ease;
+}
+.close-modal:hover { color: var(--gold); }
+#modal-title {
+    font-size: 2rem; color: var(--gold); margin-top: 0; margin-bottom: 1.5rem;
+}
+.modal-body p {
+    font-size: 1.1rem; line-height: 1.8; color: #ddd; margin: 0;
+}
+
+/* SOLID WRAPPER (Covers Video) */
+.solid-wrapper { background: var(--dark-bg); position: relative; z-index: 20; border-top: 1px solid #222; }
+
+/* FOOTER */
+.premium-footer { padding: 5rem 2rem 2rem; text-align: center; }
+.premium-footer .logo-icon { color: var(--gold); margin-bottom: 2rem; }
+.premium-footer h2 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+.premium-footer p { font-size: 1.1rem; color: #666; margin-bottom: 0; }
+.btn-solid {
+    display: inline-block; background: var(--gold); color: #000;
+    padding: 1.25rem 3rem; border-radius: 50px; font-weight: 700;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+.btn-solid:hover { background: #fff; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+.footer-bottom { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #111; font-size: 0.9rem; color: #444; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* RESPONSIVE */
+@@media (max-width: 768px) {
+    .hero-title { font-size: 12vw; }
+    .hero-subtitle { font-size: 1rem; }
+    .story-panel { padding: 0 5vw; padding-bottom: 10vh; }
+    .glass-card { padding: 2rem; }
+    .glass-card h2 { font-size: 2.2rem; }
+    .nav-links { display: none; }
+}
+</style>
