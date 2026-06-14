@@ -1,0 +1,31 @@
+/* details.css */
+.letter-spacing-1 { letter-spacing: 0.05em; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+.cursor-pointer { cursor: pointer; }
+
+.custom-dark-input:focus {
+    background-color: rgba(0,0,0,0.8) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+}
+.custom-dark-input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+/* Enhance the hover effect on the save button */
+.btn-outline-danger:hover {
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(255,255,255,0.2) !important;
+    color: white !important;
+}
