@@ -16,14 +16,16 @@ namespace page.Controllers
         private readonly IToastNotification _toast;
         private readonly IFileUploadService _fileUpload;
         private readonly INotificationService _notificationService;
+        private readonly IProfanityFilterService _profanityFilter;
 
-        public StoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IToastNotification toast, IFileUploadService fileUpload, INotificationService notificationService)
+        public StoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IToastNotification toast, IFileUploadService fileUpload, INotificationService notificationService, IProfanityFilterService profanityFilter)
         {
             _context = context;
             _userManager = userManager;
             _toast = toast;
             _fileUpload = fileUpload;
             _notificationService = notificationService;
+            _profanityFilter = profanityFilter;
         }
 
         public async Task<IActionResult> Index()
@@ -120,6 +122,13 @@ namespace page.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var filterResult = _profanityFilter.Validate(content);
+            if (!filterResult.IsClean)
+            {
+                _toast.AddErrorToastMessage("⚠️ Bình luận chứa từ ngữ không phù hợp.");
+                return RedirectToAction(nameof(Index));
+            }
+
             var story = await _context.TravelStories.FindAsync(storyId);
             if (story == null) return NotFound();
 
@@ -136,6 +145,21 @@ namespace page.Controllers
                 await _notificationService.SendAsync(story.UserId, "Bình luận mới", $"{user.UserName} đã bình luận về câu chuyện của bạn", "/Stories");
 
             _toast.AddSuccessToastMessage("Đã thêm bình luận!");
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStory(int id)
+        {
+            var story = await _context.TravelStories.FindAsync(id);
+            if (story == null) return NotFound();
+
+            _context.TravelStories.Remove(story);
+            await _context.SaveChangesAsync();
+            
+            _toast.AddSuccessToastMessage("Đã xóa câu chuyện thành công.");
             return RedirectToAction(nameof(Index));
         }
     }

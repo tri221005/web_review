@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Địa Điểm Du Lịch";
     Layout = "_Layout";
+    var savedIds = ViewBag.SavedDestinationIds as List<int> ?? new List<int>();
 }
 
 <!-- Hero Section for Destinations -->
@@ -84,7 +85,7 @@
         </div>
     </div>
 
-    @if (User.IsInRole("Admin"))
+    @if (User.Identity?.IsAuthenticated == true)
     {
         <div class="mb-4 text-end reveal">
             <a asp-action="Create" class="btn" style="background: linear-gradient(135deg, var(--green), #1B5E20); color: white; border: none; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3); border-radius: 50px; padding: 0.6rem 1.5rem; font-weight: 500;">
@@ -93,17 +94,7 @@
         </div>
     }
 
-    @{
-        var mapDestinations = ViewBag.MapDestinations as List<page.Models.Destination> ?? new List<page.Models.Destination>();
-    }
-    @if (mapDestinations.Any())
-    {
-        <div class="card border-0 mb-5 reveal-scale" style="background: rgba(20, 20, 25, 0.7); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
-            <div class="card-body p-0">
-                <div id="dest-map" style="height: 400px; width: 100%;"></div>
-            </div>
-        </div>
-    }
+
 
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <form id="compare-form" asp-action="Compare" method="get" class="d-flex align-items-center gap-2 flex-wrap">
@@ -133,6 +124,31 @@
                     <label class="compare-check position-absolute top-0 start-0 m-2" onclick="event.stopPropagation();" style="z-index: 5;">
                         <input type="checkbox" name="ids" value="@item.Id" form="compare-form" class="form-check-input compare-checkbox" style="width: 18px; height: 18px;">
                     </label>
+                    <div class="position-absolute top-0 end-0 m-2" onclick="event.stopPropagation();" style="z-index: 5;">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            if (savedIds.Contains(item.Id))
+                            {
+                                <form asp-action="UnsaveDestination" method="post" class="m-0 p-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="destinationId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0; color: #e63946; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                        <i class="bi bi-heart-fill" style="font-size: 1.2rem; margin-top: 2px;"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="SaveDestination" method="post" class="m-0 p-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="destinationId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0; color: #888; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                        <i class="bi bi-heart" style="font-size: 1.2rem; margin-top: 2px;"></i>
+                                    </button>
+                                </form>
+                            }
+                        }
+                    </div>
                     @if (!string.IsNullOrEmpty(item.ImageUrl))
                     {
                         <img src="@item.ImageUrl" alt="@item.Name" loading="lazy">
@@ -361,8 +377,7 @@
 </style>
 
 @section Scripts {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <!-- GSAP for advanced animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -393,24 +408,7 @@
                 });
             });
 
-            @if (mapDestinations.Any())
-            {
-                <text>
-            const map = L.map('dest-map').setView([16.0, 107.5], 6);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-            const markers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(mapDestinations.Select(d => new {
-                d.Id, d.Name, d.Type, d.AverageRating, Lat = d.Latitude, Lng = d.Longitude
-            })));
-            markers.forEach(m => {
-                if (m.lat && m.lng) {
-                    L.marker([m.lat, m.lng]).addTo(map)
-                        .bindPopup(`<strong>${m.name}</strong><br>${m.type}<br>⭐ ${m.averageRating.toFixed(1)}<br><a href="/Destinations/Details/${m.id}">Xem chi tiết</a>`);
-                }
-            });
-                </text>
-            }
+
         });
     </script>
 }

@@ -32,6 +32,7 @@ builder.Services.AddScoped<IPassportService, PassportService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IProfanityFilterService, ProfanityFilterService>();
 
 builder.Services.AddControllersWithViews()
     .AddNToastNotifyToastr(new ToastrOptions
@@ -73,7 +74,8 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
     await context.Database.MigrateAsync();
-    await DataSeeder.SeedDestinationsAsync(context);
+    // Đã tắt tính năng tự động tạo dữ liệu mẫu (Data Seeder) theo yêu cầu
+    // await DataSeeder.SeedDestinationsAsync(context);
 
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<page.Models.ApplicationUser>>();

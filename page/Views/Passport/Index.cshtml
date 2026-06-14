@@ -17,13 +17,13 @@
                 </span>
             }
         </div>
-        <p class="text-muted">@Model.TotalInteractions tương tác · Sưu tập con dấu 3 miền Bắc – Trung – Nam</p>
+        <p class="text-muted">@Model.TotalInteractions tương tác · Sưu tập trọn bộ 5 con dấu khám phá</p>
     </div>
 
     <div class="row g-4 justify-content-center">
         @foreach (var stamp in Model.Stamps)
         {
-            <div class="col-md-4">
+            <div class="col-6 col-md-4 col-lg-auto" style="flex: 1; min-width: 180px; max-width: 220px;">
                 <div class="card border-0 h-100 text-center p-4 @(stamp.IsEarned ? "" : "opacity-50")" style="background: rgba(20,20,25,0.8); border-radius: 20px; border: 2px @(stamp.IsEarned ? "solid var(--gold)" : "dashed rgba(255,255,255,0.15)") !important;">
                     <div class="stamp-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 90px; height: 90px; background: @(stamp.IsEarned ? "rgba(212,175,55,0.2)" : "rgba(255,255,255,0.05)"); border: 2px solid @(stamp.IsEarned ? "var(--gold)" : "rgba(255,255,255,0.2)");">
                         <i class="bi @stamp.Icon fs-1 @(stamp.IsEarned ? "text-warning" : "text-muted")"></i>

@@ -6,6 +6,78 @@
     var unreadCount = (int)(ViewBag.UnreadCount ?? 0);
 }
 
+<style>
+    .glass-card {
+        background: rgba(20, 20, 25, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.1);
+    }
+
+    .avatar-glow {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .avatar-glow:hover {
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+        transform: scale(1.05);
+    }
+
+    .stat-box {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: background 0.3s ease;
+    }
+    
+    .stat-box:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    .stamp-item {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+    }
+    
+    .stamp-item:hover {
+        transform: scale(1.2) rotate(5deg);
+    }
+
+    .list-item-card {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .list-item-card:hover {
+        background: rgba(20, 20, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        transform: translateX(5px);
+    }
+
+    .btn-glow {
+        background: linear-gradient(45deg, #d4af37, #f3e5ab);
+        color: #000;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-glow:hover {
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        transform: translateY(-2px);
+        color: #000;
+    }
+</style>
+
 <div class="section pt-4" style="max-width: 1000px; margin: 0 auto; padding: 0 15px 5rem;">
     @if (TempData["Success"] != null)
     {
@@ -18,11 +90,11 @@
 
     <div class="row g-4">
         <div class="col-lg-4">
-            <div class="card border-0 text-center p-4" style="background: rgba(20,20,25,0.8); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+            <div class="card border-0 text-center p-4 glass-card">
                 <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <div class="position-relative d-inline-block mb-3">
-                        <div class="rounded-circle overflow-hidden mx-auto" style="width: 120px; height: 120px; border: 3px solid var(--gold);">
+                        <div class="rounded-circle overflow-hidden mx-auto avatar-glow" style="width: 130px; height: 130px; border: 3px solid var(--gold);">
                             @if (!string.IsNullOrEmpty(Model.AvatarUrl))
                             {
                                 <img src="@Model.AvatarUrl" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
@@ -44,11 +116,11 @@
                     <input type="text" name="fullName" value="@Model.FullName" class="form-control form-control-sm text-center mb-2" placeholder="Họ và tên" style="background: rgba(0,0,0,0.5); color: white; border: none;">
                     <button type="submit" class="btn btn-sm btn-outline-light rounded-pill w-100">Lưu hồ sơ</button>
                 </form>
-                <hr style="border-color: rgba(255,255,255,0.1);">
-                <div class="d-flex justify-content-around">
-                    <div><div class="text-warning fw-bold fs-5">@Model.TotalReviews</div><div class="small text-muted">Đánh giá</div></div>
-                    <div><div class="text-warning fw-bold fs-5">@Model.TotalStories</div><div class="small text-muted">Câu chuyện</div></div>
-                    <div><div class="text-warning fw-bold fs-5">@Model.TotalSaved</div><div class="small text-muted">Đã lưu</div></div>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
+                <div class="d-flex justify-content-between gap-2">
+                    <div class="stat-box flex-fill"><div class="text-warning fw-bold fs-4">@Model.TotalReviews</div><div class="small text-light opacity-75">Đánh giá</div></div>
+                    <div class="stat-box flex-fill"><div class="text-warning fw-bold fs-4">@Model.TotalStories</div><div class="small text-light opacity-75">Câu chuyện</div></div>
+                    <div class="stat-box flex-fill"><div class="text-warning fw-bold fs-4">@Model.TotalSaved</div><div class="small text-light opacity-75">Đã lưu</div></div>
                 </div>
                 @if (Model.HasExplorerBadge)
                 {
@@ -58,12 +130,12 @@
                         </span>
                     </div>
                 }
-                <div class="mt-3 d-flex justify-content-center gap-2">
+                <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
                     @foreach (var stamp in Model.Stamps)
                     {
-                        <div class="text-center @(stamp.IsEarned ? "" : "opacity-50")">
-                            <i class="bi @stamp.Icon fs-3 @(stamp.IsEarned ? "text-warning" : "text-muted")"></i>
-                            <div class="small text-muted">@stamp.Region</div>
+                        <div class="text-center stamp-item @(stamp.IsEarned ? "" : "opacity-50")" title="@stamp.Region">
+                            <i class="bi @stamp.Icon fs-2 @(stamp.IsEarned ? "text-warning" : "text-light opacity-50")"></i>
+                            <div class="small text-light opacity-75 mt-1" style="font-size: 0.75rem;">@stamp.Region</div>
                         </div>
                     }
                 </div>
@@ -71,7 +143,7 @@
 
             @if (notifications.Any())
             {
-                <div class="card border-0 mt-4 p-3" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="card border-0 mt-4 p-4 glass-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="text-white fw-bold mb-0"><i class="bi bi-bell text-warning me-1"></i> Thông báo @(unreadCount > 0 ? $"({unreadCount})" : "")</h6>
                         @if (unreadCount > 0)
@@ -102,16 +174,18 @@
         <div class="col-lg-8">
             @if (Model.RecentStories.Any())
             {
-                <div class="card border-0 mb-4 p-4" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="card border-0 mb-4 p-4 glass-card">
                     <h5 class="text-white fw-bold mb-3"><i class="bi bi-journal-text text-warning me-2"></i>Câu chuyện của tôi</h5>
                     @foreach (var story in Model.RecentStories)
                     {
-                        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 mb-2" style="background: rgba(0,0,0,0.3);">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded-3 mb-2 list-item-card">
                             <div>
-                                <div class="fw-bold text-white">@story.Title</div>
-                                <div class="small text-muted">@(story.Destination?.Name) · @story.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                <div class="fw-bold text-white fs-5 mb-1">@story.Title</div>
+                                <div class="small text-light opacity-75"><i class="bi bi-geo-alt-fill text-danger me-1"></i>@(story.Destination?.Name) <span class="mx-1">•</span> <i class="bi bi-calendar-event me-1"></i>@story.CreatedAt.ToString("dd/MM/yyyy")</div>
                             </div>
-                            <span class="text-muted small"><i class="bi bi-hand-thumbs-up"></i> @story.UpvoteCount</span>
+                            <div class="text-warning bg-dark px-3 py-1 rounded-pill border border-warning border-opacity-25 shadow-sm">
+                                <i class="bi bi-hand-thumbs-up-fill"></i> @story.UpvoteCount
+                            </div>
                         </div>
                     }
                     <a asp-controller="Stories" asp-action="Create" class="btn btn-sm btn-outline-light rounded-pill mt-2">Viết thêm</a>
@@ -120,23 +194,23 @@
 
             @if (Model.SavedDestinations.Any())
             {
-                <div class="card border-0 p-4" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="card border-0 p-4 glass-card">
                     <h5 class="text-white fw-bold mb-3"><i class="bi bi-suitcase-lg text-warning me-2"></i>Điểm yêu thích</h5>
                     <div class="row g-2">
                         @foreach (var item in Model.SavedDestinations)
                         {
                             <div class="col-md-6">
                                 <a asp-controller="Destinations" asp-action="Details" asp-route-id="@item.DestinationId" class="text-decoration-none">
-                                    <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background: rgba(0,0,0,0.3);">
-                                        <div style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+                                    <div class="d-flex align-items-center gap-3 p-2 rounded-3 list-item-card">
+                                        <div style="width: 70px; height: 70px; border-radius: 12px; overflow: hidden; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.1);">
                                             @if (!string.IsNullOrEmpty(item.Destination?.ImageUrl))
                                             {
-                                                <img src="@item.Destination.ImageUrl" alt="" style="width:100%; height:100%; object-fit:cover;">
+                                                <img src="@item.Destination.ImageUrl" alt="" style="width:100%; height:100%; object-fit:cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                                             }
                                         </div>
                                         <div>
-                                            <div class="small text-white fw-bold">@item.Destination?.Name</div>
-                                            <div class="small text-muted">@item.Destination?.Location</div>
+                                            <div class="text-white fw-bold mb-1">@item.Destination?.Name</div>
+                                            <div class="small text-light opacity-75"><i class="bi bi-map me-1"></i>@item.Destination?.Location</div>
                                         </div>
                                     </div>
                                 </a>
@@ -148,11 +222,18 @@
 
             @if (!Model.RecentStories.Any() && !Model.SavedDestinations.Any())
             {
-                <div class="text-center py-5" style="color: #888;">
-                    <i class="bi bi-person-circle fs-1 d-block mb-3 opacity-25"></i>
-                    <p>Bắt đầu hành trình của bạn! Khám phá điểm đến và viết câu chuyện đầu tiên.</p>
-                    <a asp-controller="Destinations" asp-action="Index" class="btn rounded-pill" style="background: var(--gold); color: #000;">Khám phá ngay</a>
+                <div class="text-center py-5 glass-card" style="color: #888; border: 2px dashed rgba(255,255,255,0.1);">
+                    <i class="bi bi-compass fs-1 d-block mb-3 text-warning opacity-50" style="animation: float 3s ease-in-out infinite;"></i>
+                    <p class="fs-5 text-light mb-4">Bắt đầu hành trình của bạn! Khám phá điểm đến và viết câu chuyện đầu tiên.</p>
+                    <a asp-controller="Destinations" asp-action="Index" class="btn rounded-pill px-4 py-2 btn-glow">Khám phá ngay <i class="bi bi-arrow-right ms-2"></i></a>
                 </div>
+                <style>
+                    @@keyframes float {
+                        0% { transform: translateY(0px); }
+                        50% { transform: translateY(-10px); }
+                        100% { transform: translateY(0px); }
+                    }
+                </style>
             }
         </div>
     </div>
