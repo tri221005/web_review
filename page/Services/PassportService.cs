@@ -19,26 +19,35 @@ namespace page.Services
 
         private static readonly HashSet<string> SouthLocations = new(StringComparer.OrdinalIgnoreCase)
         {
-            "Miền Nam", "TP.HCM", "Sài Gòn", "Phú Quốc", "Cần Thơ", "Mũi Né", "Vũng Tàu"
+            "Miền Nam", "TP.HCM", "Sài Gòn", "Phú Quốc", "Cần Thơ", "Mũi Né", "Vũng Tàu", "Nam Cát Tiên"
         };
 
-        public static readonly string[] AllRegions = { "Miền Bắc", "Miền Trung", "Miền Nam" };
+        public static readonly string[] AllRegions = { "Miền Bắc", "Miền Trung", "Miền Nam", "Biển", "Rừng" };
 
-        public static string ResolveRegion(string? location)
+        public static IEnumerable<string> ResolveRegions(Destination destination)
         {
-            if (string.IsNullOrWhiteSpace(location))
-                return "Miền Trung";
-
+            var results = new List<string>();
+            var location = destination.Location ?? "";
+            
             if (NorthLocations.Contains(location) || location.Contains("Bắc", StringComparison.OrdinalIgnoreCase))
-                return "Miền Bắc";
+                results.Add("Miền Bắc");
+            else if (SouthLocations.Contains(location) || location.Contains("Nam", StringComparison.OrdinalIgnoreCase))
+                results.Add("Miền Nam");
+            else if (CentralLocations.Contains(location) || location.Contains("Trung", StringComparison.OrdinalIgnoreCase))
+                results.Add("Miền Trung");
+            else
+                results.Add("Miền Trung"); // Mặc định
 
-            if (SouthLocations.Contains(location) || location.Contains("Nam", StringComparison.OrdinalIgnoreCase))
-                return "Miền Nam";
+            var type = destination.Type ?? "";
+            var name = destination.Name ?? "";
+            
+            if (type.Contains("Biển", StringComparison.OrdinalIgnoreCase) || location.Contains("Biển", StringComparison.OrdinalIgnoreCase) || name.Contains("Biển", StringComparison.OrdinalIgnoreCase) || name.Contains("Nha Trang") || name.Contains("Phú Quốc") || name.Contains("Hạ Long"))
+                results.Add("Biển");
+            
+            if (type.Contains("Rừng", StringComparison.OrdinalIgnoreCase) || location.Contains("Rừng", StringComparison.OrdinalIgnoreCase) || name.Contains("Rừng", StringComparison.OrdinalIgnoreCase) || name.Contains("Cát Tiên") || name.Contains("Cúc Phương"))
+                results.Add("Rừng");
 
-            if (CentralLocations.Contains(location) || location.Contains("Trung", StringComparison.OrdinalIgnoreCase))
-                return "Miền Trung";
-
-            return "Miền Trung";
+            return results.Distinct();
         }
 
         public static string GetRegionIcon(string region) => region switch
@@ -46,6 +55,8 @@ namespace page.Services
             "Miền Bắc" => "bi-snow",
             "Miền Trung" => "bi-bank2",
             "Miền Nam" => "bi-sun-fill",
+            "Biển" => "bi-water",
+            "Rừng" => "bi-tree-fill",
             _ => "bi-geo-alt"
         };
     }
@@ -67,26 +78,30 @@ namespace page.Services
 
         public async Task AwardStampAsync(string userId, Destination destination, string source)
         {
-            var region = RegionHelper.ResolveRegion(destination.Location);
-            var existing = await _context.UserRegionStamps
-                .FirstOrDefaultAsync(s => s.UserId == userId && s.Region == region);
-
-            if (existing != null) return;
-
-            try
+            var regions = RegionHelper.ResolveRegions(destination);
+            
+            foreach (var region in regions)
             {
-                _context.UserRegionStamps.Add(new UserRegionStamp
+                var existing = await _context.UserRegionStamps
+                    .FirstOrDefaultAsync(s => s.UserId == userId && s.Region == region);
+
+                if (existing != null) continue;
+
+                try
                 {
-                    UserId = userId,
-                    Region = region,
-                    Source = source,
-                    EarnedAt = DateTime.UtcNow
-                });
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                // Unique constraint (UserId, Region) handles race condition
+                    _context.UserRegionStamps.Add(new UserRegionStamp
+                    {
+                        UserId = userId,
+                        Region = region,
+                        Source = source,
+                        EarnedAt = DateTime.UtcNow
+                    });
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    // Unique constraint (UserId, Region) handles race condition
+                }
             }
         }
 

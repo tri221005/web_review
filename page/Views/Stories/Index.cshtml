@@ -54,6 +54,17 @@
                             <button class="btn btn-sm btn-outline-light rounded-pill toggle-comments" data-story-id="@story.Id">
                                 <i class="bi bi-chat-dots"></i> Bình luận (@((story.Comments?.Count ?? 0)))
                             </button>
+                            
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <form asp-controller="Stories" asp-action="DeleteStory" method="post" class="d-inline ms-auto" onsubmit="return confirm('Bạn có chắc chắn muốn xóa câu chuyện này không?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@story.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            }
                         </div>
 
                         <div class="comments-section mt-3 d-none" id="comments-@story.Id">

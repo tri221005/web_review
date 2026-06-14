@@ -57,6 +57,13 @@ namespace page.Controllers
                 .OrderByDescending(d => d.Id)
                 .ToListAsync();
 
+            var recentStories = await _context.TravelStories
+                .Include(s => s.User)
+                .Include(s => s.Destination)
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(15)
+                .ToListAsync();
+
             return View(new AdminDashboardViewModel
             {
                 TotalDestinations = totalDestinations,
@@ -67,7 +74,8 @@ namespace page.Controllers
                 AverageRating = avgRating,
                 TopDestinations = topDestinations,
                 PendingDestinations = pendingDestinations,
-                RecentUsers = recentUsers
+                RecentUsers = recentUsers,
+                RecentStories = recentStories
             });
         }
 
@@ -98,6 +106,20 @@ namespace page.Controllers
             }
             await _userManager.DeleteAsync(user);
             TempData["Success"] = "Đã xóa người dùng.";
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStory(int id)
+        {
+            var story = await _context.TravelStories.FindAsync(id);
+            if (story == null) return NotFound();
+
+            _context.TravelStories.Remove(story);
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = "Đã xóa câu chuyện.";
             return RedirectToAction(nameof(Dashboard));
         }
     }

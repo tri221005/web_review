@@ -11,6 +11,7 @@ namespace page.Models.ViewModels
         public List<Destination> TopDestinations { get; set; } = new();
         public List<Destination> PendingDestinations { get; set; } = new();
         public List<UserSummary> RecentUsers { get; set; } = new();
+        public List<TravelStory> RecentStories { get; set; } = new();
     }
 
     public class UserSummary

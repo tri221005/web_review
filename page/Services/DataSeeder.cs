@@ -8,8 +8,6 @@ namespace page.Services
     {
         public static async Task SeedDestinationsAsync(ApplicationDbContext context)
         {
-            if (await context.Destinations.AnyAsync()) return;
-
             var destinations = new List<Destination>
             {
                 new()
@@ -102,10 +100,42 @@ namespace page.Services
                     Longitude = 103.9840,
                     LandingSceneKey = "phuquoc",
                     HeritageTimelineJson = """[{"year":"2006","title":"Đặc khu","description":"Phú Quốc trở thành đặc khu kinh tế"},{"year":"2023","title":"Đảo thí điểm","description":"Phú Quốc phát triển du lịch cao cấp quốc tế"}]"""
+                },
+                new()
+                {
+                    Name = "Nha Trang",
+                    Description = "Thành phố biển nổi tiếng với những bãi cát trắng dài và hệ sinh thái san hô đa dạng.",
+                    Location = "Biển",
+                    Type = "Nghỉ dưỡng",
+                    EstimatedCost = 2000000,
+                    ImageUrl = "https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&q=80",
+                    Latitude = 12.2388,
+                    Longitude = 109.1967,
+                    LandingSceneKey = "nhatrang",
+                    HeritageTimelineJson = """[{"year":"1924","title":"Thành lập","description":"Nha Trang chính thức trở thành thị trấn"}]"""
+                },
+                new()
+                {
+                    Name = "Rừng Nam Cát Tiên",
+                    Description = "Khu bảo tồn thiên nhiên rộng lớn với hệ sinh thái rừng nhiệt đới phong phú, đa dạng sinh học.",
+                    Location = "Rừng",
+                    Type = "Thiên nhiên",
+                    EstimatedCost = 1200000,
+                    ImageUrl = "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&q=80",
+                    Latitude = 11.4285,
+                    Longitude = 107.4281,
+                    LandingSceneKey = "cattien",
+                    HeritageTimelineJson = """[{"year":"1978","title":"Bảo tồn","description":"Thành lập khu rừng cấm Nam Cát Tiên"},{"year":"2001","title":"Sinh quyển thế giới","description":"UNESCO công nhận là Khu dự trữ sinh quyển"}]"""
                 }
             };
 
-            context.Destinations.AddRange(destinations);
+            foreach (var dest in destinations)
+            {
+                if (!await context.Destinations.AnyAsync(d => d.Name == dest.Name))
+                {
+                    context.Destinations.Add(dest);
+                }
+            }
             await context.SaveChangesAsync();
         }
     }

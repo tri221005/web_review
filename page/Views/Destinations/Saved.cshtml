@@ -1,4 +1,6 @@
 @model IEnumerable<page.Models.SavedDestination>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<page.Models.ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Vali Ảo - Điểm Yêu Thích";
     Layout = "_Layout";
@@ -66,26 +68,145 @@
                 </div>
             </div>
 
-            @if (checklist.Any())
-            {
-                <div class="card border-0" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05) !important;">
-                    <div class="card-body p-4">
-                        <h5 class="text-white fw-bold mb-3"><i class="bi bi-check2-square text-success me-2"></i>Checklist chuẩn bị</h5>
-                        <ul class="list-unstyled mb-0">
-                            @foreach (var item in checklist)
-                            {
-                                <li class="mb-2 text-muted"><i class="bi bi-check-circle text-success me-2"></i>@item</li>
-                            }
-                        </ul>
+            <div class="card border-0" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05) !important;">
+                <div class="card-body p-4">
+                    <h5 class="text-white fw-bold mb-3"><i class="bi bi-check2-square text-success me-2"></i>Checklist chuẩn bị</h5>
+                    
+                    <div class="input-group mb-3">
+                        <input type="text" id="newItemInput" class="form-control" placeholder="Thêm đồ cần mang..." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; box-shadow: none;">
+                        <button class="btn btn-outline-warning fw-bold" type="button" id="btnAddItem"><i class="bi bi-plus-lg"></i> Thêm</button>
                     </div>
+
+                    <style>
+                        #newItemInput:focus { background: rgba(0,0,0,0.5); border-color: var(--gold); }
+                        #newItemInput::placeholder { color: rgba(255,255,255,0.4); }
+                    </style>
+
+                    <ul class="list-unstyled mb-0" id="checklistContainer">
+                        <!-- Javascript will render items here -->
+                    </ul>
                 </div>
-            }
+            </div>
 
             <div class="mt-4">
-                <a asp-controller="Itinerary" asp-action="Plan" class="btn w-100 rounded-pill py-2 fw-bold" style="background: linear-gradient(135deg, var(--red), #8E1B1B); color: white;">
-                    <i class="bi bi-map me-1"></i> Tạo lộ trình từ vali ảo
+                <a href="#" onclick="alert('Tính năng Tạo lộ trình tự động đang được hệ thống nâng cấp và sẽ sớm ra mắt. Mong bạn thông cảm!'); return false;" class="btn w-100 rounded-pill py-2 fw-bold" style="background: linear-gradient(135deg, var(--red), #8E1B1B); color: white; opacity: 0.8;">
+                    <i class="bi bi-map me-1"></i> Tạo lộ trình từ vali ảo (Sắp ra mắt)
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const suggestedItems = @Html.Raw(Json.Serialize(checklist));
+            const storageKey = 'user_checklist_@UserManager.GetUserId(User)';
+            let checklistData = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+            suggestedItems.forEach(sName => {
+                if (!checklistData.find(i => i.name === sName)) {
+                    checklistData.push({ name: sName, isChecked: false });
+                }
+            });
+            saveChecklist();
+
+            const container = document.getElementById('checklistContainer');
+            const input = document.getElementById('newItemInput');
+            const btnAdd = document.getElementById('btnAddItem');
+
+            function saveChecklist() {
+                localStorage.setItem(storageKey, JSON.stringify(checklistData));
+            }
+
+            function renderChecklist() {
+                container.innerHTML = '';
+                if(checklistData.length === 0) {
+                    container.innerHTML = '<li class="text-muted small text-center mt-3">Danh sách trống. Hãy thêm những món đồ cần thiết!</li>';
+                    return;
+                }
+
+                checklistData.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'mb-2 p-2 rounded d-flex align-items-center justify-content-between';
+                    li.style.transition = 'all 0.3s ease';
+                    li.style.cursor = 'pointer';
+
+                    const itemContent = document.createElement('div');
+                    itemContent.className = 'd-flex align-items-center flex-grow-1';
+                    
+                    if (item.isChecked) {
+                        li.style.background = 'rgba(25, 135, 84, 0.15)';
+                        li.style.border = '1px solid rgba(25, 135, 84, 0.3)';
+                        li.style.color = '#f8f9fa';
+                        itemContent.innerHTML = `
+                            <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 1.1rem;"></i>
+                            <span class="fw-bold" style="letter-spacing: 0.3px; text-decoration: line-through; opacity: 0.7;">${item.name}</span>
+                        `;
+                    } else {
+                        li.style.background = 'rgba(220, 53, 69, 0.15)';
+                        li.style.border = '1px solid rgba(220, 53, 69, 0.3)';
+                        li.style.color = '#f8f9fa';
+                        itemContent.innerHTML = `
+                            <i class="bi bi-circle text-danger me-2" style="font-size: 1.1rem;"></i>
+                            <span class="fw-bold" style="letter-spacing: 0.3px;">${item.name}</span>
+                        `;
+                    }
+
+                    itemContent.onclick = () => {
+                        item.isChecked = !item.isChecked;
+                        saveChecklist();
+                        renderChecklist();
+                    };
+
+                    const btnDelete = document.createElement('button');
+                    btnDelete.className = 'btn btn-sm p-0 ms-2 text-muted';
+                    btnDelete.innerHTML = '<i class="bi bi-x-lg"></i>';
+                    btnDelete.style.transition = 'color 0.2s';
+                    btnDelete.onclick = (e) => {
+                        e.stopPropagation();
+                        checklistData.splice(index, 1);
+                        saveChecklist();
+                        renderChecklist();
+                    };
+
+                    li.onmouseover = () => {
+                        li.style.background = item.isChecked ? 'rgba(25, 135, 84, 0.25)' : 'rgba(220, 53, 69, 0.25)';
+                        li.style.transform = 'translateX(5px)';
+                        btnDelete.classList.replace('text-muted', 'text-white');
+                    };
+                    li.onmouseout = () => {
+                        li.style.background = item.isChecked ? 'rgba(25, 135, 84, 0.15)' : 'rgba(220, 53, 69, 0.15)';
+                        li.style.transform = 'translateX(0)';
+                        btnDelete.classList.replace('text-white', 'text-muted');
+                    };
+
+                    li.appendChild(itemContent);
+                    li.appendChild(btnDelete);
+                    container.appendChild(li);
+                });
+            }
+
+            function addItem() {
+                const val = input.value.trim();
+                if (val) {
+                    if (!checklistData.find(i => i.name.toLowerCase() === val.toLowerCase())) {
+                        checklistData.push({ name: val, isChecked: false });
+                        saveChecklist();
+                        renderChecklist();
+                        input.value = '';
+                    } else {
+                        alert('Món đồ này đã có trong danh sách!');
+                    }
+                }
+            }
+
+            btnAdd.addEventListener('click', addItem);
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') addItem();
+            });
+
+            renderChecklist();
+        });
+    </script>
+}

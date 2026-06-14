@@ -17,19 +17,22 @@ namespace page.Controllers
         private readonly IPassportService _passportService;
         private readonly IToastNotification _toast;
         private readonly INotificationService _notificationService;
+        private readonly IProfanityFilterService _profanityFilter;
 
         public DestinationsController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IPassportService passportService,
             IToastNotification toast,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IProfanityFilterService profanityFilter)
         {
             _context = context;
             _userManager = userManager;
             _passportService = passportService;
             _toast = toast;
             _notificationService = notificationService;
+            _profanityFilter = profanityFilter;
         }
 
         public async Task<IActionResult> Index(string searchString, string location, string type, decimal? maxCost, string sortOrder)
@@ -73,6 +76,19 @@ namespace page.Controllers
 
             var list = await destinations.ToListAsync();
             ViewBag.MapDestinations = list.Where(d => d.Latitude.HasValue && d.Longitude.HasValue).ToList();
+
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = _userManager.GetUserId(User);
+                ViewBag.SavedDestinationIds = await _context.SavedDestinations
+                    .Where(s => s.UserId == userId)
+                    .Select(s => s.DestinationId)
+                    .ToListAsync();
+            }
+            else
+            {
+                ViewBag.SavedDestinationIds = new List<int>();
+            }
 
             return View(list);
         }
@@ -154,6 +170,13 @@ namespace page.Controllers
 
             if (!string.IsNullOrWhiteSpace(content))
             {
+                var filterResult = _profanityFilter.Validate(content);
+                if (!filterResult.IsClean)
+                {
+                    _toast.AddErrorToastMessage("⚠️ Bình luận chứa từ ngữ không phù hợp.");
+                    return RedirectToAction(nameof(Details), new { id = destinationId });
+                }
+
                 var comment = new DestinationComment
                 {
                     DestinationId = destinationId,
@@ -197,6 +220,13 @@ namespace page.Controllers
             var destination = await _context.Destinations.FindAsync(destinationId);
             if (destination == null) return NotFound();
 
+            var filterResult = _profanityFilter.Validate(comment);
+            if (!filterResult.IsClean)
+            {
+                _toast.AddErrorToastMessage("⚠️ Đánh giá chứa từ ngữ không phù hợp.");
+                return RedirectToAction(nameof(Details), new { id = destinationId });
+            }
+
             var existingReview = await _context.Reviews
                 .FirstOrDefaultAsync(r => r.DestinationId == destinationId && r.UserId == user.Id);
             
@@ -216,6 +246,7 @@ namespace page.Controllers
             };
 
             _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
 
             var allRatings = await _context.Reviews
                 .Where(r => r.DestinationId == destinationId)
@@ -271,6 +302,13 @@ namespace page.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReview(int reviewId, int destinationId, string comment)
         {
+            var filterResult = _profanityFilter.Validate(comment);
+            if (!filterResult.IsClean)
+            {
+                _toast.AddErrorToastMessage("⚠️ Đánh giá chứa từ ngữ không phù hợp.");
+                return RedirectToAction(nameof(Details), new { id = destinationId });
+            }
+
             var review = await _context.Reviews.FindAsync(reviewId);
             if (review != null)
             {
@@ -302,14 +340,16 @@ namespace page.Controllers
                 
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-                var prompt = $"Bạn là một travel blogger chuyên nghiệp. Dựa vào các từ khóa sau: '{keywords}', hãy viết một đoạn review du lịch thật cảm xúc, thơ mộng, dài khoảng 3-4 câu bằng tiếng Việt. KHÔNG GIẢI THÍCH, KHÔNG CHÀO HỎI MỞ ĐẦU, CHỈ TRẢ VỀ DUY NHẤT ĐOẠN REVIEW.";
+                var systemPrompt = "Bạn là một trợ lý AI chuyên về du lịch và là một travel blogger chuyên nghiệp. Nhiệm vụ DUY NHẤT của bạn là viết review du lịch. TUYỆT ĐỐI TỪ CHỐI tạo nội dung hoặc trả lời bất kỳ câu hỏi nào không liên quan đến du lịch, tham quan, ẩm thực, văn hóa địa phương. Nếu từ khóa người dùng nhập vào KHÔNG liên quan đến du lịch, bạn PHẢI trả lời: 'Xin lỗi, tôi chỉ hỗ trợ viết đánh giá về chủ đề du lịch và khám phá.'";
+                var userPrompt = $"Dựa vào các từ khóa sau: '{keywords}', hãy viết một đoạn review du lịch thật cảm xúc, thơ mộng, dài khoảng 3-4 câu bằng tiếng Việt. KHÔNG GIẢI THÍCH, KHÔNG CHÀO HỎI MỞ ĐẦU, CHỈ TRẢ VỀ DUY NHẤT ĐOẠN REVIEW.";
 
                 var payload = new
                 {
-                    model = "gemma3:1b", // Cập nhật model thành gemma3:1b theo yêu cầu
+                    model = "hf.co/nguyenviet/PhoGPT-4B-Chat-GGUF:Q4_K_M", // Cập nhật model thành PhoGPT theo yêu cầu
                     messages = new[]
                     {
-                        new { role = "user", content = prompt }
+                        new { role = "system", content = systemPrompt },
+                        new { role = "user", content = userPrompt }
                     },
                     temperature = 0.7,
                     max_tokens = 500
@@ -364,6 +404,8 @@ namespace page.Controllers
                 _toast.AddSuccessToastMessage("Đã lưu vào yêu thích!");
             }
 
+            var returnUrl = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrEmpty(returnUrl)) return Redirect(returnUrl);
             return RedirectToAction(nameof(Details), new { id = destinationId });
         }
 
