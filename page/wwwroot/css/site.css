@@ -380,3 +380,90 @@ body {
   .hero-actions { flex-direction: column; align-items: center; }
   .btn { width: 100%; max-width: 280px; justify-content: center; }
 }
+
+/* ─── UI OPTIMIZATION COMPONENTS ─── */
+
+/* Home Index Optims */
+.mobile-nav-toggle {
+    background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 1001;
+}
+.nav-logout-form {
+    display: inline;
+}
+.glass-card-sm {
+    max-width: 600px;
+}
+.action-buttons.justify-center {
+    justify-content: center;
+}
+.stories-preview {
+    padding: 4rem 5%; max-width: 1200px; margin: 0 auto;
+}
+.stories-title {
+    color: #fff; font-weight: 800; margin-bottom: 2rem; text-align: center;
+}
+.story-card {
+    border-radius: 16px;
+}
+.story-card h5 {
+    color: #fff; font-weight: 700;
+}
+.story-excerpt {
+    color: #aaa; font-size: 0.9rem;
+}
+.modal-cta-btn {
+    display: inline-block; margin-top: 1.5rem; text-decoration: none;
+}
+
+/* Destinations Details Optims */
+.destination-details-section {
+    background-color: transparent; 
+    padding-top: calc(var(--nav-h) + var(--topbar-h) + 2rem); 
+    padding-bottom: 5rem; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding-left: 15px; 
+    padding-right: 15px;
+}
+.destination-container {
+    max-width: var(--max-w);
+}
+.destination-glass-card {
+    border-radius: var(--radius-lg); 
+    background: rgba(20, 20, 25, 0.8); 
+    border: 1px solid rgba(255,255,255,0.05) !important;
+}
+.destination-hero-img {
+    object-fit: cover; width: 100%; min-height: 300px; border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Profile Index Optims */
+.profile-section {
+    max-width: 1000px; margin: 0 auto; padding: 0 15px 5rem;
+}
+.profile-avatar {
+    width: 130px; height: 130px; border: 3px solid var(--gold);
+}
+.avatar-upload-btn {
+    width: 32px; height: 32px; background: var(--gold); color: #000; cursor: pointer;
+}
+.custom-dark-input {
+    background: rgba(0,0,0,0.5); color: white; border: none;
+}
+.custom-hr {
+    border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;
+}
+.notification-list {
+    max-height: 300px; overflow-y: auto;
+}
+.empty-state-card {
+    border: 2px dashed rgba(255,255,255,0.1);
+}
+.float-anim {
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
