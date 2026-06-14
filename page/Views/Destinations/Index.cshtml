@@ -21,7 +21,7 @@
     <!-- Filter Section with Glassmorphism -->
     <div class="card border-0 mb-5 reveal-scale" style="background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
         <div class="card-body p-4">
-            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+            <form id="filter-form" asp-action="Index" method="get" class="row g-3 align-items-end">
                 <div class="col-lg-3 col-md-6">
                     <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-search text-danger me-1"></i> Tìm kiếm</label>
                     <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-lg border-0 shadow-sm" placeholder="Tên hoặc mô tả..." style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
@@ -103,14 +103,14 @@
         </form>
         <div class="d-flex align-items-center gap-2">
             <label class="text-muted small fw-bold"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
-            <select id="sortOrder" name="sortOrder" class="form-select form-select-sm" style="background: rgba(0,0,0,0.5); color: white; border: none; width: auto;" onchange="window.location.href=this.value">
+            <select id="sortOrder" name="sortOrder" form="filter-form" class="form-select form-select-sm" style="background: rgba(0,0,0,0.5); color: white; border: none; width: auto;" onchange="document.getElementById('filter-form').submit()">
                 @{ var currentSort = ViewBag.CurrentSort as string ?? "rating_desc"; }
-                <option value="?sortOrder=rating_desc" style="background: #111;" selected="@(currentSort == "rating_desc")">Đánh giá cao nhất</option>
-                <option value="?sortOrder=rating_asc" style="background: #111;" selected="@(currentSort == "rating_asc")">Đánh giá thấp nhất</option>
-                <option value="?sortOrder=cost_asc" style="background: #111;" selected="@(currentSort == "cost_asc")">Giá rẻ nhất</option>
-                <option value="?sortOrder=cost_desc" style="background: #111;" selected="@(currentSort == "cost_desc")">Giá cao nhất</option>
-                <option value="?sortOrder=name_asc" style="background: #111;" selected="@(currentSort == "name_asc")">Tên A-Z</option>
-                <option value="?sortOrder=name_desc" style="background: #111;" selected="@(currentSort == "name_desc")">Tên Z-A</option>
+                <option value="rating_desc" style="background: #111;" selected="@(currentSort == "rating_desc")">Đánh giá cao nhất</option>
+                <option value="rating_asc" style="background: #111;" selected="@(currentSort == "rating_asc")">Đánh giá thấp nhất</option>
+                <option value="cost_asc" style="background: #111;" selected="@(currentSort == "cost_asc")">Giá rẻ nhất</option>
+                <option value="cost_desc" style="background: #111;" selected="@(currentSort == "cost_desc")">Giá cao nhất</option>
+                <option value="name_asc" style="background: #111;" selected="@(currentSort == "name_asc")">Tên A-Z</option>
+                <option value="name_desc" style="background: #111;" selected="@(currentSort == "name_desc")">Tên Z-A</option>
             </select>
         </div>
     </div>

@@ -5,14 +5,7 @@
     var sceneLinksJson = System.Text.Json.JsonSerializer.Serialize(Model.SceneLinks);
 }
 
-<!-- PRELOADER -->
-<div id="preloader" role="status" aria-busy="true">
-    <div class="loader-content">
-        <h2 class="loader-title">VIỆT NAM</h2>
-        <div class="progress-bar"><div class="progress" id="progress-bar"></div></div>
-        <div class="loading-text">ĐANG TẢI...</div>
-    </div>
-</div>
+<!-- PRELOADER REMOVED FOR FASTER LOADING -->
 
 <!-- NAVBAR -->
 <nav class="premium-nav" id="navbar">
@@ -112,6 +105,10 @@
         <div class="hero-content">
             <h1 class="hero-title">VIỆT NAM</h1>
             <p class="hero-subtitle">Hành Trình Chạm Vào Di Sản</p>
+            <div class="action-buttons justify-center" style="margin-top: 3rem;">
+                <a href="/Destinations" class="btn-solid" style="padding: 1.25rem 3rem;">Khám Phá Ngay</a>
+                <button class="btn-history" onclick="document.getElementById('scene-2').scrollIntoView({behavior: 'smooth'})" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
+            </div>
         </div>
         <div class="scroll-indicator">
             <div class="mouse"></div>
@@ -306,24 +303,11 @@ requestAnimationFrame(raf);
 
 // --- PRELOADER ---
 document.addEventListener("DOMContentLoaded", () => {
-    const preloader = document.getElementById("preloader");
-    const progressBar = document.getElementById("progress-bar");
-    
-    let width = 0;
-    const interval = setInterval(() => {
-        width += 10;
-        progressBar.style.width = width + "%";
-        if (width >= 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-                preloader.classList.add("hidden");
-                
-                // Show first background image automatically
-                const firstMedia = document.getElementById('vid-1');
-                gsap.to(firstMedia, { opacity: 1, duration: 1.5, ease: "power2.inOut" });
-            }, 500);
-        }
-    }, 50);
+    // Show first background image automatically
+    const firstMedia = document.getElementById('vid-1');
+    if (firstMedia) {
+        gsap.to(firstMedia, { opacity: 1, duration: 1.5, ease: "power2.inOut" });
+    }
 });
 
 // --- GSAP & CLICK-TO-PLAY LOGIC ---
@@ -355,23 +339,35 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     });
 
     // Glass Card Fade-up Animations
-    const totalScenes = 8;
-    for (let i = 2; i <= totalScenes; i++) {
-        const card = document.querySelector(`#scene-${i} .glass-card`);
-        if (card) {
-            gsap.fromTo(card, 
-                { y: 100, opacity: 0 },
-                { 
-                    scrollTrigger: {
-                        trigger: `#scene-${i}`,
-                        start: "top 80%",
-                        end: "center center",
-                        scrub: 1
-                    },
-                    y: 0, 
-                    opacity: 1
-                }
-            );
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (!prefersReducedMotion) {
+        const totalScenes = 8;
+        for (let i = 2; i <= totalScenes; i++) {
+            const card = document.querySelector(`#scene-${i} .glass-card`);
+            if (card) {
+                gsap.fromTo(card, 
+                    { y: 100, opacity: 0 },
+                    { 
+                        scrollTrigger: {
+                            trigger: `#scene-${i}`,
+                            start: "top 80%",
+                            end: "center center",
+                            scrub: 1
+                        },
+                        y: 0, 
+                        opacity: 1
+                    }
+                );
+            }
+        }
+    } else {
+        const totalScenes = 8;
+        for (let i = 2; i <= totalScenes; i++) {
+            const card = document.querySelector(`#scene-${i} .glass-card`);
+            if (card) {
+                gsap.set(card, { y: 0, opacity: 1 });
+            }
         }
     }
     
@@ -692,5 +688,10 @@ body {
     .glass-card { padding: 2rem; }
     .glass-card h2 { font-size: 2.2rem; }
     .nav-links { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-indicator, .mouse { animation: none !important; display: none; }
+    .bg-video { transition: none !important; }
 }
 </style>

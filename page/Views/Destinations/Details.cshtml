@@ -195,52 +195,54 @@
                         
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            @if (isSaved)
-                            {
-                                <form asp-action="UnsaveDestination" method="post" class="mb-2">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="destinationId" value="@Model.Id" />
-                                    <button type="submit" class="btn w-100 rounded-pill py-2 fw-bold" style="background: var(--red); color: white; border: none;" aria-label="Bỏ lưu khỏi danh sách yêu thích">
-                                        <i class="bi bi-heart-fill me-1"></i> Đã lưu yêu thích
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-action="SaveDestination" method="post" class="mb-2">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="destinationId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-outline-danger w-100 rounded-pill py-2 fw-bold" style="border-width: 2px;" aria-label="Lưu vào danh sách yêu thích">
-                                        <i class="bi bi-heart me-1"></i> Lưu vào yêu thích
-                                    </button>
-                                </form>
-                            }
-
                             @if (!isVisited)
                             {
-                                <form asp-action="MarkVisited" method="post" class="mb-2">
+                                <form asp-action="MarkVisited" method="post" class="mb-3">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="destinationId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-outline-warning w-100 rounded-pill py-2 fw-bold" aria-label="Đánh dấu đã đến điểm đến này">
-                                        <i class="bi bi-patch-check me-1"></i> Đánh dấu đã đến
+                                    <button type="submit" class="btn w-100 rounded-pill py-3 fw-bold shadow-lg" style="background: var(--gold); color: #000; border: none; font-size: 1.05rem; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                                        <i class="bi bi-patch-check-fill me-2"></i> Đánh dấu đã đến
                                     </button>
                                 </form>
                             }
                             else
                             {
-                                <div class="alert py-2 mb-2 rounded-pill text-center small" style="background: rgba(249,168,37,0.15); color: var(--gold); border: 1px solid rgba(249,168,37,0.3);">
-                                    <i class="bi bi-patch-check-fill me-1"></i> Đã đến
+                                <div class="alert py-3 mb-3 rounded-pill text-center fw-bold" style="background: rgba(249,168,37,0.15); color: var(--gold); border: 1px solid rgba(249,168,37,0.3);">
+                                    <i class="bi bi-patch-check-fill me-2"></i> Đã có mặt trong Hộ chiếu
                                 </div>
                             }
 
-                            <a asp-controller="Passport" asp-action="Index" class="btn btn-outline-light w-100 rounded-pill py-2 mb-2">
-                                <i class="bi bi-passport me-1"></i> Xem hộ chiếu
-                            </a>
+                            <div class="d-flex gap-2 mb-2">
+                                @if (isSaved)
+                                {
+                                    <form asp-action="UnsaveDestination" method="post" class="flex-grow-1 m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="destinationId" value="@Model.Id" />
+                                        <button type="submit" class="btn w-100 rounded-pill py-2 fw-medium" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                                            <i class="bi bi-heart-fill text-danger me-1"></i> Đã lưu
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="SaveDestination" method="post" class="flex-grow-1 m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="destinationId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-outline-light w-100 rounded-pill py-2 fw-medium" style="border: 1px solid rgba(255,255,255,0.2);">
+                                            <i class="bi bi-heart me-1"></i> Lưu lại
+                                        </button>
+                                    </form>
+                                }
+
+                                <a asp-controller="Passport" asp-action="Index" class="btn w-100 rounded-pill py-2 flex-grow-1 fw-medium" style="background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.1);">
+                                    <i class="bi bi-passport me-1"></i> Hộ chiếu
+                                </a>
+                            </div>
                         }
                         else
                         {
-                            <a href="/Identity/Account/Login" class="btn w-100 rounded-pill py-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, var(--red), #8E1B1B); color: white; border: none;">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập để lưu
+                            <a href="/Identity/Account/Login" class="btn w-100 rounded-pill py-3 fw-bold shadow-sm" style="background: linear-gradient(135deg, var(--red), #8E1B1B); color: white; border: none; font-size: 1.05rem;">
+                                Khám Phá Cùng Chúng Tôi
                             </a>
                         }
                     </div>
@@ -285,34 +287,33 @@
                     }
                     else
                     {
-                        <form id="reviewForm" asp-action="AddReview" method="post" class="mb-4 p-4 rounded-4 border" style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important;">
+                        <form id="reviewForm" asp-action="AddReview" method="post" class="mb-5 mt-3">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="destinationId" value="@Model.Id" />
-                            <div class="mb-3">
-                                <label class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Chấm điểm của bạn</label>
+                            <div class="mb-3 d-flex align-items-center gap-3">
+                                <label class="form-label fw-bold mb-0" style="color: #ccc;">Chấm điểm:</label>
                                 <div class="rating-input d-flex flex-row-reverse justify-content-end gap-1">
-                                    <input type="radio" name="rating" value="5" id="star5" required><label for="star5" class="bi bi-star-fill text-warning fs-4 cursor-pointer"></label>
-                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="bi bi-star-fill text-warning fs-4 cursor-pointer"></label>
-                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="bi bi-star-fill text-warning fs-4 cursor-pointer"></label>
-                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="bi bi-star-fill text-warning fs-4 cursor-pointer"></label>
-                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="bi bi-star-fill text-warning fs-4 cursor-pointer"></label>
+                                    <input type="radio" name="rating" value="5" id="star5" required><label for="star5" class="bi bi-star-fill fs-4 cursor-pointer"></label>
+                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="bi bi-star-fill fs-4 cursor-pointer"></label>
+                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="bi bi-star-fill fs-4 cursor-pointer"></label>
+                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="bi bi-star-fill fs-4 cursor-pointer"></label>
+                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="bi bi-star-fill fs-4 cursor-pointer"></label>
                                 </div>
                                 <style>
                                     .rating-input input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-                                    .rating-input label { color: rgba(255,255,255,0.2) !important; transition: color 0.2s, transform 0.2s; cursor: pointer; }
+                                    .rating-input label { color: rgba(255,255,255,0.15) !important; transition: all 0.2s; cursor: pointer; }
                                     .rating-input label:hover,
                                     .rating-input label:hover ~ label,
                                     .rating-input input:checked ~ label { color: #ffc107 !important; transform: scale(1.1); }
-                                    .rating-input input:focus + label { outline: 2px solid var(--gold); border-radius: 4px; padding: 2px; }
                                 </style>
                             </div>
                             <div class="mb-4 position-relative">
-                                <textarea id="reviewComment" name="comment" class="form-control shadow-sm custom-dark-input" rows="3" placeholder="Gõ vài từ (ví dụ: đẹp, đồ ăn ngon)..." required style="border: 1px solid rgba(255,255,255,0.2) !important; border-radius: var(--radius); resize: none; font-size: 0.95rem; background: rgba(255,255,255,0.05); color: white; padding-bottom: 2.5rem;"></textarea>
-                                <button type="button" id="btnAIEnhance" class="btn btn-sm position-absolute bottom-0 end-0 m-2 rounded-pill" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-                                    <i class="bi bi-magic text-warning me-1"></i> Trợ lý AI (Viết dài)
+                                <textarea id="reviewComment" name="comment" class="form-control shadow-none border-0" rows="3" placeholder="Chia sẻ trải nghiệm của bạn (nhấn để AI hỗ trợ viết)..." required style="border-radius: 12px; resize: none; font-size: 1rem; background: rgba(255,255,255,0.03); color: white; padding: 1rem;"></textarea>
+                                <button type="button" id="btnAIEnhance" class="btn btn-sm position-absolute bottom-0 end-0 m-2 rounded-pill" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; z-index: 10; display: none;">
+                                    <i class="bi bi-magic text-warning me-1"></i> Làm mượt
                                 </button>
                             </div>
-                            <button type="submit" class="btn rounded-pill fw-bold" style="background: var(--gold); color: #000; padding: 0.8rem 2.5rem; transition: all 0.3s;" onmouseover="this.style.filter='brightness(1.15)'" onmouseout="this.style.filter='brightness(1)'">Gửi đánh giá</button>
+                            <button type="submit" class="btn rounded-pill fw-medium" style="background: var(--gold); color: #000; padding: 0.7rem 2rem; transition: all 0.3s;">Gửi đánh giá</button>
                         </form>
                     }
                 }
@@ -392,6 +393,14 @@
             const txtComment = document.getElementById('reviewComment');
             
             if (btnEnhance && txtComment) {
+                txtComment.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        btnEnhance.style.display = 'inline-block';
+                    } else {
+                        btnEnhance.style.display = 'none';
+                    }
+                });
+
                 btnEnhance.addEventListener('click', function () {
                     const keywords = txtComment.value;
                     if (!keywords.trim()) {
@@ -446,38 +455,6 @@
         });
     </script>
 }
-
-<style>
-    .letter-spacing-1 { letter-spacing: 0.05em; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-    
-    .cursor-pointer { cursor: pointer; }
-    
-    .custom-dark-input:focus {
-        background-color: rgba(0,0,0,0.8) !important;
-        color: #fff !important;
-        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
-    }
-    .custom-dark-input::placeholder {
-        color: rgba(255,255,255,0.4);
-    }
-    
-    /* Enhance the hover effect on the save button */
-    .btn-outline-danger:hover {
-        background-color: var(--red) !important;
-        border-color: var(--red) !important;
-        color: white !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
-    }
-    
-    .btn-outline-secondary:hover {
-        background: rgba(255,255,255,0.2) !important;
-        color: white !important;
-    }
-    
-</style>
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+}
