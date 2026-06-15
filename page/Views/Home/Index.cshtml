@@ -110,7 +110,7 @@
             <p class="hero-subtitle">HÀNH TRÌNH CHẠM VÀO DI SẢN</p>
             <div class="action-buttons justify-center" style="margin-top: 3rem;">
                 <a href="/Destinations" class="btn-solid" style="padding: 1.25rem 3rem;">Khám Phá Ngay</a>
-                <button class="btn-history" onclick="document.getElementById('scene-2').scrollIntoView({behavior: 'smooth'})" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
+                <button class="btn-history" onclick="scrollToScene('#scene-2')" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -303,6 +303,16 @@ function raf(time) {
     requestAnimationFrame(raf);
 }
 requestAnimationFrame(raf);
+
+// Global helper for scrolling to scene
+window.scrollToScene = function(selector) {
+    if (typeof lenis !== 'undefined') {
+        lenis.scrollTo(selector);
+    } else {
+        const el = document.querySelector(selector);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+};
 
 // --- PRELOADER ---
 document.addEventListener("DOMContentLoaded", () => {
