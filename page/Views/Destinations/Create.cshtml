@@ -4,17 +4,21 @@
     Layout = "_Layout";
 }
 
-<div class="section" style="background-color: transparent; min-height: 100vh; padding: calc(var(--nav-h) + var(--topbar-h) + 3rem) 1.5rem 5rem;">
-    <div class="container-fluid mx-auto" style="max-width: 900px;">
+@section Styles {
+    <link rel="stylesheet" href="~/css/destinations.css" asp-append-version="true" />
+}
+
+<div class="section dest-form-container">
+    <div class="container-fluid mx-auto dest-form-inner">
         
         <div class="mb-4 reveal">
-            <a asp-action="Index" class="btn rounded-pill fw-medium" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; transition: all 0.3s; box-shadow: var(--shadow-sm);">
+            <a asp-action="Index" class="btn rounded-pill fw-medium btn-back-dest">
                 <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
             </a>
         </div>
 
-        <div class="card border-0 shadow-md reveal-scale" style="border-radius: var(--radius-lg); overflow: hidden; background: rgba(20, 20, 25, 0.8); border: 1px solid rgba(255,255,255,0.05) !important;">
-            <div class="card-header text-white p-4" style="background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1) !important;">
+        <div class="card border-0 shadow-md reveal-scale dest-form-card">
+            <div class="card-header text-white p-4 dest-form-header">
                 <h3 class="mb-0 fw-bold d-flex align-items-center">
                     <i class="bi bi-map-fill text-warning me-3 fs-2"></i>
                     Thêm Địa Điểm Du Lịch Mới
@@ -25,68 +29,68 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 border-0 shadow-sm"></div>
                     
                     <div class="mb-4">
-                        <label asp-for="Name" class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Tên địa điểm</label>
-                        <input asp-for="Name" class="form-control form-control-lg border-0 shadow-sm custom-dark-input" required placeholder="Nhập tên địa điểm..." style="background: rgba(0,0,0,0.5); color: white; border-radius: var(--radius); font-size: 1rem;" />
+                        <label asp-for="Name" class="form-label dest-form-label">Tên địa điểm</label>
+                        <input asp-for="Name" class="form-control form-control-lg border-0 shadow-sm custom-dark-input" required placeholder="Nhập tên địa điểm..." />
                         <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
                     </div>
                     
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
-                            <label asp-for="Location" class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Khu vực</label>
-                            <select asp-for="Location" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: white; border-radius: var(--radius); font-size: 1rem;">
-                                <option value="Miền Bắc" style="background: #111;">Miền Bắc</option>
-                                <option value="Miền Trung" style="background: #111;">Miền Trung</option>
-                                <option value="Miền Nam" style="background: #111;">Miền Nam</option>
-                                <option value="Hà Nội" style="background: #111;">Hà Nội</option>
-                                <option value="TP.HCM" style="background: #111;">TP.HCM</option>
-                                <option value="Biển" style="background: #111;">Biển</option>
-                                <option value="Rừng" style="background: #111;">Rừng</option>
+                            <label asp-for="Location" class="form-label dest-form-label">Khu vực</label>
+                            <select asp-for="Location" class="form-select form-select-lg border-0 shadow-sm custom-dark-input">
+                                <option value="Miền Bắc" class="bg-black">Miền Bắc</option>
+                                <option value="Miền Trung" class="bg-black">Miền Trung</option>
+                                <option value="Miền Nam" class="bg-black">Miền Nam</option>
+                                <option value="Hà Nội" class="bg-black">Hà Nội</option>
+                                <option value="TP.HCM" class="bg-black">TP.HCM</option>
+                                <option value="Biển" class="bg-black">Biển</option>
+                                <option value="Rừng" class="bg-black">Rừng</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Type" class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Loại hình</label>
-                            <select asp-for="Type" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: white; border-radius: var(--radius); font-size: 1rem;">
-                                <option value="Thiên nhiên" style="background: #111;">Thiên nhiên</option>
-                                <option value="Di tích lịch sử" style="background: #111;">Di tích lịch sử</option>
-                                <option value="Văn hóa" style="background: #111;">Văn hóa</option>
-                                <option value="Nghỉ dưỡng" style="background: #111;">Nghỉ dưỡng</option>
-                                <option value="Ẩm thực" style="background: #111;">Ẩm thực</option>
-                                <option value="Biển" style="background: #111;">Biển</option>
-                                <option value="Rừng" style="background: #111;">Rừng</option>
+                            <label asp-for="Type" class="form-label dest-form-label">Loại hình</label>
+                            <select asp-for="Type" class="form-select form-select-lg border-0 shadow-sm custom-dark-input">
+                                <option value="Thiên nhiên" class="bg-black">Thiên nhiên</option>
+                                <option value="Di tích lịch sử" class="bg-black">Di tích lịch sử</option>
+                                <option value="Văn hóa" class="bg-black">Văn hóa</option>
+                                <option value="Nghỉ dưỡng" class="bg-black">Nghỉ dưỡng</option>
+                                <option value="Ẩm thực" class="bg-black">Ẩm thực</option>
+                                <option value="Biển" class="bg-black">Biển</option>
+                                <option value="Rừng" class="bg-black">Rừng</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="EstimatedCost" class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Chi phí dự kiến (VNĐ)</label>
-                        <div class="input-group shadow-sm" style="border-radius: var(--radius); overflow: hidden; background: rgba(0,0,0,0.5);">
-                            <span class="input-group-text border-0" style="background: rgba(255,255,255,0.05); color: #ccc;"><i class="bi bi-cash-stack"></i></span>
-                            <input asp-for="EstimatedCost" type="number" class="form-control form-control-lg border-0 custom-dark-input" placeholder="0" style="background: transparent; color: white; font-size: 1rem;" />
+                        <label asp-for="EstimatedCost" class="form-label dest-form-label">Chi phí dự kiến (VNĐ)</label>
+                        <div class="input-group shadow-sm estimated-cost-group">
+                            <span class="input-group-text border-0 estimated-cost-addon"><i class="bi bi-cash-stack"></i></span>
+                            <input asp-for="EstimatedCost" type="number" class="form-control form-control-lg border-0 custom-dark-input" placeholder="0" />
                         </div>
                     </div>
                     
                     <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Hình ảnh minh họa (URL hoặc Tải file lên)</label>
+                        <label class="form-label dest-form-label">Hình ảnh minh họa (URL hoặc Tải file lên)</label>
                         <div class="d-flex flex-column gap-3">
-                            <div class="input-group shadow-sm" style="border-radius: var(--radius); overflow: hidden; background: rgba(0,0,0,0.5);">
-                                <span class="input-group-text border-0" style="background: rgba(255,255,255,0.05); color: #ccc;"><i class="bi bi-link-45deg"></i></span>
-                                <input asp-for="ImageUrl" class="form-control form-control-lg border-0 custom-dark-input" placeholder="Nhập đường dẫn URL (nếu có)..." style="background: transparent; color: white; font-size: 1rem;" />
+                            <div class="input-group shadow-sm estimated-cost-group">
+                                <span class="input-group-text border-0 estimated-cost-addon"><i class="bi bi-link-45deg"></i></span>
+                                <input asp-for="ImageUrl" class="form-control form-control-lg border-0 custom-dark-input" placeholder="Nhập đường dẫn URL (nếu có)..." />
                             </div>
-                            <div class="input-group shadow-sm" style="border-radius: var(--radius); overflow: hidden; background: rgba(0,0,0,0.5);">
-                                <span class="input-group-text border-0" style="background: rgba(255,255,255,0.05); color: #ccc;"><i class="bi bi-upload"></i></span>
-                                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control form-control-lg border-0 custom-dark-input" style="background: transparent; color: white; font-size: 1rem;" />
+                            <div class="input-group shadow-sm estimated-cost-group">
+                                <span class="input-group-text border-0 estimated-cost-addon"><i class="bi bi-upload"></i></span>
+                                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control form-control-lg border-0 custom-dark-input" />
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-5">
-                        <label asp-for="Description" class="form-label fw-bold small text-uppercase letter-spacing-1" style="color: #aaa;">Mô tả chi tiết</label>
-                        <textarea asp-for="Description" class="form-control form-control-lg border-0 shadow-sm custom-dark-input" rows="6" required placeholder="Viết một đoạn mô tả hấp dẫn..." style="background: rgba(0,0,0,0.5); color: white; border-radius: var(--radius); font-size: 1rem; resize: none;"></textarea>
+                        <label asp-for="Description" class="form-label dest-form-label">Mô tả chi tiết</label>
+                        <textarea asp-for="Description" class="form-control form-control-lg border-0 shadow-sm custom-dark-input dest-form-textarea" rows="6" required placeholder="Viết một đoạn mô tả hấp dẫn..."></textarea>
                     </div>
                     
-                    <div class="d-flex justify-content-end gap-3 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-end gap-3 pt-4 dest-form-footer">
                         <button type="button" class="btn rounded-pill px-4 fw-bold shadow-sm custom-cancel-btn" onclick="window.location.href='@Url.Action("Index")'">Hủy</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm" style="background: linear-gradient(135deg, var(--red), #8E1B1B); color: white; border: none; transition: transform 0.3s, box-shadow 0.3s;">
+                        <button type="submit" class="btn rounded-pill px-5 fw-bold shadow-sm btn-primary-gradient">
                             <i class="bi bi-check2-circle me-1"></i> Lưu địa điểm
                         </button>
                     </div>
@@ -95,50 +99,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    .letter-spacing-1 { letter-spacing: 0.05em; }
-    
-    .custom-dark-select {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 0.75rem center !important;
-        background-size: 16px 12px !important;
-    }
-    
-    .custom-dark-input:focus, .custom-dark-select:focus {
-        background-color: rgba(0,0,0,0.8) !important;
-        color: #fff !important;
-        box-shadow: 0 0 0 0.25rem rgba(198, 40, 40, 0.25) !important;
-        outline: none;
-    }
-    
-    .custom-dark-input::placeholder {
-        color: rgba(255,255,255,0.4) !important;
-    }
-    
-    .custom-cancel-btn {
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    .custom-cancel-btn:hover {
-        background: rgba(255,255,255,0.2);
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(198, 40, 40, 0.3) !important;
-    }
-    
-    .reveal { opacity: 0; transform: translateY(20px); animation: revealAnim 0.6s ease forwards; }
-    .reveal-scale { opacity: 0; transform: scale(0.98); animation: revealScaleAnim 0.6s ease forwards; }
-    
-    @@keyframes revealAnim { to { opacity: 1; transform: translateY(0); } }
-    @@keyframes revealScaleAnim { to { opacity: 1; transform: scale(1); } }
-</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

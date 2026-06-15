@@ -118,6 +118,10 @@ namespace page.Data
                 .WithMany()
                 .HasForeignKey(d => d.SubmittedByUserId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Destination>()
+                .Property(d => d.EstimatedCost)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }

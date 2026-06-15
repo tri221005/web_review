@@ -111,7 +111,7 @@
                                 <td><span class="badge bg-secondary">@(d.SubmittedByUser?.UserName ?? "Admin")</span></td>
                                 <td><a asp-controller="Destinations" asp-action="Details" asp-route-id="@d.Id" class="text-info text-decoration-none" target="_blank">Xem chi tiết <i class="bi bi-box-arrow-up-right"></i></a></td>
                                 <td>
-                                    <form asp-action="ApproveDestination" method="post" style="display:inline;">
+                                    <form asp-action="ApproveDestination" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@d.Id" />
                                         <button type="submit" class="btn btn-sm btn-success rounded-pill px-3">Duyệt ngay</button>
@@ -142,7 +142,7 @@
                                 <td>@(s.Destination?.Name ?? "-")</td>
                                 <td>@s.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
-                                    <form asp-action="DeleteStory" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa câu chuyện này không?')">
+                                    <form asp-action="DeleteStory" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa câu chuyện này không?')">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@s.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i class="bi bi-trash"></i> Xóa</button>

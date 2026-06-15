@@ -4,8 +4,12 @@
     Layout = "_Layout";
 }
 
-<div class="section" style="min-height: 60vh; padding: calc(var(--nav-h) + 100px) 1.5rem 5rem; max-width: 600px; margin: 0 auto;">
-    <div class="card border-0 text-center p-5" style="background: rgba(20,20,25,0.8); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05) !important;">
+@section Styles {
+    <link rel="stylesheet" href="~/css/destinations.css" asp-append-version="true" />
+}
+
+<div class="section dest-delete-container">
+    <div class="card border-0 text-center p-5 dest-delete-card">
         <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3 d-block"></i>
         <h3 class="text-white fw-bold mb-3">Xác nhận xóa?</h3>
         <p class="text-muted mb-4">Bạn sắp xóa <strong class="text-white">@Model.Name</strong>. Hành động này không thể hoàn tác.</p>
@@ -17,3 +21,4 @@
         </form>
     </div>
 </div>
+

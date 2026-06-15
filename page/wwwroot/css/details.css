@@ -29,3 +29,314 @@
     background: rgba(255,255,255,0.2) !important;
     color: white !important;
 }
+
+/* details.css extensions */
+
+
+
+/* Back button */
+.btn-back-list {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    transition: all 0.3s;
+}
+.btn-back-list:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* Badge location */
+.badge-location {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Destination Name Header */
+.dest-details-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* Glass Card */
+.destination-glass-card {
+    background: rgba(20, 20, 25, 0.7) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.destination-glass-card .card-body {
+    background: transparent;
+}
+
+/* Info header */
+.details-info-header {
+    font-size: 1.5rem;
+}
+
+/* Info Divider */
+.details-info-divider {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Info Circle Icon */
+.info-circle-icon {
+    width: 54px;
+    height: 54px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Info label/value */
+.details-info-label {
+    color: #aaa;
+}
+
+.details-info-value-gold {
+    color: var(--gold);
+}
+
+/* Main description block */
+.description-content {
+    line-height: 1.85;
+    color: #ccc;
+    font-size: 1.05rem;
+    white-space: pre-wrap;
+}
+
+/* Review highlights block */
+.review-highlights-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sentiment-badge {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Gallery images */
+.gallery-img {
+    height: 120px;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Heritage Timeline */
+.timeline-item-border {
+    border-width: 2px !important;
+}
+
+/* Story Item Divider */
+.story-item-divider {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Average Rating Text Shadow */
+.avg-rating-text {
+    text-shadow: 0 2px 10px rgba(249, 168, 37, 0.2);
+}
+
+.avg-rating-muted-lbl {
+    color: #888;
+}
+
+/* Primary actions in sidebar */
+.btn-visited-action {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    font-size: 1.05rem;
+    transition: transform 0.2s;
+}
+.btn-visited-action:hover {
+    transform: translateY(-2px);
+    color: #000;
+}
+
+.visited-alert-badge {
+    background: rgba(249, 168, 37, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(249, 168, 37, 0.3);
+}
+
+.btn-sidebar-save {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.btn-sidebar-save:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.btn-sidebar-unsave {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.btn-sidebar-unsave:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+.btn-sidebar-passport {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-sidebar-passport:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+.btn-sidebar-login {
+    background: linear-gradient(135deg, var(--red), #8E1B1B);
+    color: white;
+    border: none;
+    font-size: 1.05rem;
+}
+.btn-sidebar-login:hover {
+    background: linear-gradient(135deg, #a52a2a, #aa1b1b) !important;
+    color: white !important;
+}
+
+/* Review Section */
+.reviews-card-header {
+    background: transparent;
+}
+
+.review-info-alert {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    color: #ccc;
+}
+
+.review-label-muted {
+    color: #ccc;
+}
+
+/* Star rating input styling */
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: end;
+    gap: 0.25rem;
+}
+
+.rating-input input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.rating-input label {
+    color: rgba(255, 255, 255, 0.15) !important;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+    color: #ffc107 !important;
+    transform: scale(1.1);
+}
+
+/* Comment inputs */
+.comment-textarea-wrapper {
+    position: relative;
+}
+
+.comment-textarea {
+    border-radius: 12px;
+    resize: none;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    padding: 1rem;
+}
+.comment-textarea:focus {
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+}
+
+.btn-ai-enhance {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+    z-index: 10;
+    display: none;
+}
+.btn-ai-enhance:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+}
+
+.btn-submit-review {
+    background: var(--gold);
+    color: #000;
+    padding: 0.7rem 2rem;
+    transition: all 0.3s;
+}
+.btn-submit-review:hover {
+    background: #d4af37 !important;
+    color: #000 !important;
+    transform: translateY(-1px);
+}
+
+.review-list-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.review-item-divider {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.review-avatar-bg {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+}
+
+.review-author-name {
+    font-size: 1rem;
+}
+
+.review-time-muted {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.review-stars-muted {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.review-comment-text {
+    color: #ccc;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    padding-left: 60px;
+}
+
+.review-admin-actions {
+    padding-left: 60px;
+}
+
+.review-edit-form {
+    padding-left: 60px;
+}
+
+.review-edit-textarea {
+    border-radius: var(--radius);
+    background: rgba(0,0,0,0.5);
+    color: white;
+}
+
+.reviews-empty-state {
+    color: #888;
+}

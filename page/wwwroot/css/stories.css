@@ -66,3 +66,77 @@
     color: white;
     box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
 }
+
+/* Stories creation styles */
+.story-create-section {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 15px 5rem;
+}
+
+.story-form-card {
+    background: rgba(20, 20, 25, 0.8);
+    border-radius: 16px;
+}
+
+.story-alert-danger {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border: 1px solid var(--red) !important;
+    color: white !important;
+}
+
+.story-form-label {
+    color: #ccc;
+    letter-spacing: 1px;
+}
+
+.custom-dark-input, .custom-file-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+.custom-dark-input:focus, .form-select:focus, .custom-file-input:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important;
+    color: white !important;
+}
+
+.custom-dark-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.custom-dark-option {
+    background: #111 !important;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    transition: all 0.3s;
+}
+.custom-file-input::-webkit-file-upload-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.custom-file-input::file-selector-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    transition: all 0.3s;
+}
+.custom-file-input::file-selector-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+textarea.custom-dark-input {
+    resize: none;
+}

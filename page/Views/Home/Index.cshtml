@@ -314,6 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
 if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
+    const totalScenes = 8;
+
     // Sync Lenis with GSAP
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => { lenis.raf(time * 1000); });
@@ -342,7 +344,6 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (!prefersReducedMotion) {
-        const totalScenes = 8;
         for (let i = 2; i <= totalScenes; i++) {
             const card = document.querySelector(`#scene-${i} .glass-card`);
             if (card) {
@@ -362,7 +363,6 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
             }
         }
     } else {
-        const totalScenes = 8;
         for (let i = 2; i <= totalScenes; i++) {
             const card = document.querySelector(`#scene-${i} .glass-card`);
             if (card) {
@@ -690,7 +690,7 @@ body {
     .nav-links { display: none; }
 }
 
-@media (prefers-reduced-motion: reduce) {
+        @@media (prefers-reduced-motion: reduce) {
     .scroll-indicator, .mouse { animation: none !important; display: none; }
     .bg-video { transition: none !important; }
 }

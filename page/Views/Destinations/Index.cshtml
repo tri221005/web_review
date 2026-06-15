@@ -5,31 +5,35 @@
     var savedIds = ViewBag.SavedDestinationIds as List<int> ?? new List<int>();
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/destinations.css" asp-append-version="true" />
+}
+
 <!-- Hero Section for Destinations -->
-<div class="hero" style="min-height: 45vh; padding: calc(var(--nav-h) + var(--topbar-h) + 2rem) 2rem 2rem;">
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&q=80');"></div>
-    <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(26,26,46,0.85) 0%, rgba(198,40,40,0.6) 50%, rgba(26,26,46,0.85) 100%);"></div>
+<div class="hero destinations-hero">
+    <div class="hero-bg destinations-hero-bg"></div>
+    <div class="hero-overlay destinations-hero-overlay"></div>
     <div class="hero-pattern"></div>
     <div class="hero-content text-center reveal">
         <div class="hero-badge"><i class="bi bi-compass"></i> Khám Phá Việt Nam</div>
-        <h1 style="font-size: clamp(2.5rem, 5vw, 4rem);">Các <span>Địa Điểm</span> Tuyệt Vời</h1>
-        <p style="margin-bottom: 0;">Tìm kiếm và lựa chọn những điểm đến lý tưởng nhất cho hành trình của bạn.</p>
+        <h1 class="destinations-hero-title">Các <span>Địa Điểm</span> Tuyệt Vời</h1>
+        <p class="destinations-hero-desc">Tìm kiếm và lựa chọn những điểm đến lý tưởng nhất cho hành trình của bạn.</p>
     </div>
 </div>
 
-<div class="section pt-5" style="background-color: transparent; padding-bottom: 5rem; max-width: 1200px; margin: 0 auto; padding-left: 15px; padding-right: 15px;">
+<div class="section pt-5 destinations-section">
     <!-- Filter Section with Glassmorphism -->
-    <div class="card border-0 mb-5 reveal-scale" style="background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+    <div class="card border-0 mb-5 reveal-scale filter-card">
         <div class="card-body p-4">
             <form id="filter-form" asp-action="Index" method="get" class="row g-3 align-items-end">
                 <div class="col-lg-3 col-md-6">
-                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-search text-danger me-1"></i> Tìm kiếm</label>
-                    <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-lg border-0 shadow-sm" placeholder="Tên hoặc mô tả..." style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                    <label class="form-label fw-bold filter-label"><i class="bi bi-search text-danger me-1"></i> Tìm kiếm</label>
+                    <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" class="form-control form-control-lg border-0 shadow-sm filter-input" placeholder="Tên hoặc mô tả...">
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Khu vực</label>
-                    <select name="location" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
-                        <option value="" style="background: #111;">Tất cả khu vực</option>
+                    <label class="form-label fw-bold filter-label"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Khu vực</label>
+                    <select name="location" class="form-select form-select-lg border-0 shadow-sm custom-dark-select filter-select" aria-label="Lọc theo khu vực">
+                        <option value="">Tất cả khu vực</option>
                         @if(ViewBag.Locations != null)
                         {
                             foreach (var loc in ViewBag.Locations)
@@ -38,11 +42,11 @@
                                 {
                                     if(Context.Request.Query["location"] == loc)
                                     {
-                                        <option value="@loc" selected style="background: #111;">@loc</option>
+                                        <option value="@loc" selected>@loc</option>
                                     }
                                     else
                                     {
-                                        <option value="@loc" style="background: #111;">@loc</option>
+                                        <option value="@loc">@loc</option>
                                     }
                                 }
                             }
@@ -50,9 +54,9 @@
                     </select>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-tags-fill text-danger me-1"></i> Loại hình</label>
-                    <select name="type" class="form-select form-select-lg border-0 shadow-sm custom-dark-select" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
-                        <option value="" style="background: #111;">Tất cả loại hình</option>
+                    <label class="form-label fw-bold filter-label"><i class="bi bi-tags-fill text-danger me-1"></i> Loại hình</label>
+                    <select name="type" class="form-select form-select-lg border-0 shadow-sm custom-dark-select filter-select" aria-label="Lọc theo loại hình">
+                        <option value="">Tất cả loại hình</option>
                         @if(ViewBag.Types != null)
                         {
                             foreach (var type in ViewBag.Types)
@@ -61,11 +65,11 @@
                                 {
                                     if(Context.Request.Query["type"] == type)
                                     {
-                                        <option value="@type" selected style="background: #111;">@type</option>
+                                        <option value="@type" selected>@type</option>
                                     }
                                     else
                                     {
-                                        <option value="@type" style="background: #111;">@type</option>
+                                        <option value="@type">@type</option>
                                     }
                                 }
                             }
@@ -73,11 +77,11 @@
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-4">
-                    <label class="form-label fw-bold" style="font-size: 0.85rem; color: #ccc;"><i class="bi bi-cash-stack text-danger me-1"></i> Chi phí tối đa</label>
-                    <input type="number" name="maxCost" value="@Context.Request.Query["maxCost"]" class="form-control form-control-lg border-0 shadow-sm" placeholder="VNĐ" style="background: rgba(0,0,0,0.5); color: #fff; font-size: 0.95rem; border-radius: 12px;">
+                    <label class="form-label fw-bold filter-label"><i class="bi bi-cash-stack text-danger me-1"></i> Chi phí tối đa</label>
+                    <input type="number" name="maxCost" value="@Context.Request.Query["maxCost"]" class="form-control form-control-lg border-0 shadow-sm filter-input" placeholder="VNĐ">
                 </div>
                 <div class="col-lg-1 col-md-2">
-                    <button type="submit" class="btn w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--gold); color: #000; padding: 0.75rem 0; border-radius: 12px; font-weight: bold; border: none;">
+                    <button type="submit" class="btn w-100 h-100 d-flex align-items-center justify-content-center filter-submit-btn" aria-label="Lọc kết quả">
                         <i class="bi bi-funnel-fill"></i> <span class="d-md-none ms-2">Lọc</span>
                     </button>
                 </div>
@@ -88,29 +92,27 @@
     @if (User.Identity?.IsAuthenticated == true)
     {
         <div class="mb-4 text-end reveal">
-            <a asp-action="Create" class="btn" style="background: linear-gradient(135deg, var(--green), #1B5E20); color: white; border: none; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3); border-radius: 50px; padding: 0.6rem 1.5rem; font-weight: 500;">
+            <a asp-action="Create" class="btn add-dest-btn">
                 <i class="bi bi-plus-lg me-1"></i> Thêm địa điểm mới
             </a>
         </div>
     }
 
-
-
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <form id="compare-form" asp-action="Compare" method="get" class="d-flex align-items-center gap-2 flex-wrap">
             <span class="text-muted small"><i class="bi bi-columns-gap me-1"></i>Chọn 2-3 điểm để so sánh:</span>
-            <button type="submit" class="btn btn-sm rounded-pill" style="background: var(--gold); color: #000;" id="compare-btn" disabled>So sánh</button>
+            <button type="submit" class="btn btn-sm rounded-pill compare-btn-gold" id="compare-btn" disabled>So sánh</button>
         </form>
         <div class="d-flex align-items-center gap-2">
-            <label class="text-muted small fw-bold"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
-            <select id="sortOrder" name="sortOrder" form="filter-form" class="form-select form-select-sm" style="background: rgba(0,0,0,0.5); color: white; border: none; width: auto;" onchange="document.getElementById('filter-form').submit()">
+            <label class="text-muted small fw-bold" for="sortOrder"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
+            <select id="sortOrder" name="sortOrder" form="filter-form" class="form-select form-select-sm sort-select" onchange="document.getElementById('filter-form').submit()">
                 @{ var currentSort = ViewBag.CurrentSort as string ?? "rating_desc"; }
-                <option value="rating_desc" style="background: #111;" selected="@(currentSort == "rating_desc")">Đánh giá cao nhất</option>
-                <option value="rating_asc" style="background: #111;" selected="@(currentSort == "rating_asc")">Đánh giá thấp nhất</option>
-                <option value="cost_asc" style="background: #111;" selected="@(currentSort == "cost_asc")">Giá rẻ nhất</option>
-                <option value="cost_desc" style="background: #111;" selected="@(currentSort == "cost_desc")">Giá cao nhất</option>
-                <option value="name_asc" style="background: #111;" selected="@(currentSort == "name_asc")">Tên A-Z</option>
-                <option value="name_desc" style="background: #111;" selected="@(currentSort == "name_desc")">Tên Z-A</option>
+                <option value="rating_desc" selected="@(currentSort == "rating_desc")">Đánh giá cao nhất</option>
+                <option value="rating_asc" selected="@(currentSort == "rating_asc")">Đánh giá thấp nhất</option>
+                <option value="cost_asc" selected="@(currentSort == "cost_asc")">Giá rẻ nhất</option>
+                <option value="cost_desc" selected="@(currentSort == "cost_desc")">Giá cao nhất</option>
+                <option value="name_asc" selected="@(currentSort == "name_asc")">Tên A-Z</option>
+                <option value="name_desc" selected="@(currentSort == "name_desc")">Tên Z-A</option>
             </select>
         </div>
     </div>
@@ -121,10 +123,10 @@
         {
             <div class="dest-card custom-dark-card gs-reveal-item" onclick="location.href='@Url.Action("Details", new { id = item.Id })'">
                 <div class="card-img-wrapper position-relative">
-                    <label class="compare-check position-absolute top-0 start-0 m-2" onclick="event.stopPropagation();" style="z-index: 5;">
-                        <input type="checkbox" name="ids" value="@item.Id" form="compare-form" class="form-check-input compare-checkbox" style="width: 18px; height: 18px;">
+                    <label class="compare-check position-absolute top-0 start-0 m-2 compare-check-label" onclick="event.stopPropagation();">
+                        <input type="checkbox" name="ids" value="@item.Id" form="compare-form" class="form-check-input compare-checkbox compare-chkbox" aria-label="Chọn so sánh @item.Name">
                     </label>
-                    <div class="position-absolute top-0 end-0 m-2" onclick="event.stopPropagation();" style="z-index: 5;">
+                    <div class="position-absolute top-0 end-0 m-2 compare-check-label" onclick="event.stopPropagation();">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             if (savedIds.Contains(item.Id))
@@ -132,8 +134,8 @@
                                 <form asp-action="UnsaveDestination" method="post" class="m-0 p-0">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="destinationId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0; color: #e63946; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                                        <i class="bi bi-heart-fill" style="font-size: 1.2rem; margin-top: 2px;"></i>
+                                    <button type="submit" aria-label="Bỏ lưu @item.Name" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center bookmark-btn bookmark-btn-saved">
+                                        <i class="bi bi-heart-fill"></i>
                                     </button>
                                 </form>
                             }
@@ -142,8 +144,8 @@
                                 <form asp-action="SaveDestination" method="post" class="m-0 p-0">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="destinationId" value="@item.Id" />
-                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0; color: #888; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                                        <i class="bi bi-heart" style="font-size: 1.2rem; margin-top: 2px;"></i>
+                                    <button type="submit" aria-label="Lưu @item.Name" class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center bookmark-btn bookmark-btn-unsaved">
+                                        <i class="bi bi-heart"></i>
                                     </button>
                                 </form>
                             }
@@ -155,15 +157,15 @@
                     }
                     else
                     {
-                        <div class="d-flex align-items-center justify-content-center" style="height: 220px; background: rgba(0,0,0,0.5);">
-                            <span class="text-muted opacity-50"><i class="bi bi-image" style="font-size: 3rem;"></i></span>
+                        <div class="d-flex align-items-center justify-content-center img-placeholder-bg">
+                            <span class="text-muted opacity-50"><i class="bi bi-image img-placeholder-icon"></i></span>
                         </div>
                     }
                     <div class="card-img-overlay-hover">
                         <span class="btn-glass"><i class="bi bi-eye"></i> Khám phá</span>
                     </div>
                 </div>
-                <div class="dest-card-body d-flex flex-column" style="height: 100%;">
+                <div class="dest-card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <span class="dest-tag glass-tag"><i class="bi bi-tag-fill me-1"></i>@item.Type</span>
                         <span class="text-warning fw-bold glass-rating">
@@ -209,175 +211,18 @@
     {
         <div class="text-center py-5 reveal-scale rounded-4 shadow-sm empty-state-custom">
             <div class="mb-4">
-                <i class="bi bi-search text-muted opacity-25" style="font-size: 4rem;"></i>
+                <i class="bi bi-search text-muted opacity-25 empty-state-search-icon"></i>
             </div>
             <h4 class="text-white fw-bold mb-3">Không tìm thấy địa điểm nào</h4>
-            <p class="text-muted mb-4" style="color: #aaa !important;">Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc xóa bộ lọc.</p>
-            <a asp-action="Index" class="btn btn-outline-danger rounded-pill px-4" style="border-width: 2px;">
+            <p class="text-muted mb-4">Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc xóa bộ lọc.</p>
+            <a asp-action="Index" class="btn btn-outline-danger rounded-pill px-4">
                 <i class="bi bi-arrow-counterclockwise me-1"></i> Xóa bộ lọc
             </a>
         </div>
     }
 </div>
 
-<style>
-    /* Card Enhancements */
-    .custom-dark-card {
-        background: rgba(20, 20, 25, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px !important;
-        overflow: hidden;
-    }
-    .custom-dark-card:hover {
-        background: rgba(30, 30, 40, 0.8) !important;
-        border-color: rgba(212, 175, 55, 0.3) !important;
-        transform: translateY(-8px) !important;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important;
-    }
-    .dest-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        text-decoration: none;
-        color: inherit;
-        position: relative;
-    }
-    .dest-card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 1.5rem !important;
-    }
-    
-    /* Image Overlay Hover */
-    .card-img-wrapper {
-        position: relative;
-        overflow: hidden;
-        border-radius: 20px 20px 0 0;
-    }
-    .card-img-wrapper img {
-        width: 100%;
-        height: 240px;
-        object-fit: cover;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .custom-dark-card:hover .card-img-wrapper img {
-        transform: scale(1.08);
-    }
-    .card-img-overlay-hover {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-    }
-    .custom-dark-card:hover .card-img-overlay-hover {
-        opacity: 1;
-    }
-    .btn-glass {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        padding: 0.5rem 1.2rem;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transform: translateY(20px);
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .custom-dark-card:hover .btn-glass {
-        transform: translateY(0);
-    }
-
-    /* Tags & Text Styling */
-    .glass-tag {
-        background: rgba(198, 40, 40, 0.2) !important;
-        border: 1px solid rgba(198, 40, 40, 0.5);
-        color: #ffcccc !important;
-        backdrop-filter: blur(4px);
-    }
-    .glass-rating {
-        font-size: 0.85rem;
-        background: rgba(249, 168, 37, 0.15) !important;
-        padding: 0.25rem 0.75rem !important;
-        border-radius: 50px;
-        border: 1px solid rgba(249, 168, 37, 0.3);
-    }
-    .card-title-hover {
-        transition: color 0.3s ease;
-        font-weight: 700;
-    }
-    .custom-dark-card:hover .card-title-hover {
-        color: var(--gold) !important;
-    }
-    .text-muted-custom {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.9rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        line-height: 1.6;
-    }
-    .border-top-custom {
-        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-    }
-    .text-location {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
-    }
-    .text-price {
-        font-size: 1.05rem;
-        color: var(--gold);
-    }
-
-    /* Filter Inputs */
-    .custom-dark-select {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 0.75rem center !important;
-        background-size: 16px 12px !important;
-    }
-    .custom-dark-select:focus, input.form-control:focus {
-        background-color: rgba(0,0,0,0.8) !important;
-        color: #fff !important;
-        box-shadow: 0 0 0 0.25rem rgba(198, 40, 40, 0.3) !important;
-        border: 1px solid rgba(198, 40, 40, 0.5) !important;
-    }
-    input.form-control::placeholder {
-        color: rgba(255,255,255,0.4);
-    }
-
-    /* Empty State */
-    .empty-state-custom {
-        background: rgba(20, 20, 25, 0.5);
-        border: 1px dashed rgba(255, 255, 255, 0.15);
-        margin-top: 2rem;
-        backdrop-filter: blur(10px);
-    }
-    
-    /* Reveal Animations */
-    .reveal { opacity: 0; transform: translateY(30px); animation: revealAnim 0.7s ease forwards; }
-    .reveal-scale { opacity: 0; transform: scale(0.95); animation: revealScaleAnim 0.7s ease forwards; }
-    
-    @@keyframes revealAnim {
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @@keyframes revealScaleAnim {
-        to { opacity: 1; transform: scale(1); }
-    }
-</style>
-
 @section Scripts {
-
     <!-- GSAP for advanced animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -402,13 +247,15 @@
             const compareBtn = document.getElementById('compare-btn');
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', () => {
-                    const checked = document.querySelectorAll('.compare-checkbox:checked').length;
-                    compareBtn.disabled = checked < 2;
-                    if (checked > 3) { cb.checked = false; compareBtn.disabled = true; }
+                    let checked = document.querySelectorAll('.compare-checkbox:checked');
+                    if (checked.length > 3) {
+                        cb.checked = false;
+                        alert('Bạn chỉ có thể so sánh tối đa 3 địa điểm.');
+                        checked = document.querySelectorAll('.compare-checkbox:checked');
+                    }
+                    compareBtn.disabled = checked.length < 2;
                 });
             });
-
-
         });
     </script>
 }
