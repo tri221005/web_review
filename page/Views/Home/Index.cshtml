@@ -103,11 +103,14 @@
     <!-- 1. HERO / INTRO -->
     <section class="story-panel align-center" id="scene-1">
         <div class="hero-content">
-            <h1 class="hero-title">VIỆT NAM</h1>
-            <p class="hero-subtitle">Hành Trình Chạm Vào Di Sản</p>
+            <h1 class="hero-title">
+                <span class="title-viet">VIỆT</span>
+                <span class="title-nam">NAM</span>
+            </h1>
+            <p class="hero-subtitle">HÀNH TRÌNH CHẠM VÀO DI SẢN</p>
             <div class="action-buttons justify-center" style="margin-top: 3rem;">
                 <a href="/Destinations" class="btn-solid" style="padding: 1.25rem 3rem;">Khám Phá Ngay</a>
-                <button class="btn-history" onclick="document.getElementById('scene-2').scrollIntoView({behavior: 'smooth'})" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
+                <button class="btn-history" onclick="scrollToScene('#scene-2')" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -300,6 +303,16 @@ function raf(time) {
     requestAnimationFrame(raf);
 }
 requestAnimationFrame(raf);
+
+// Global helper for scrolling to scene
+window.scrollToScene = function(selector) {
+    if (typeof lenis !== 'undefined') {
+        lenis.scrollTo(selector);
+    } else {
+        const el = document.querySelector(selector);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+};
 
 // --- PRELOADER ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -529,7 +542,7 @@ body {
 .nav-links a, .nav-logout-btn { color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease; }
 .nav-logout-btn { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
 .nav-links a:hover, .nav-logout-btn:hover { color: var(--gold); }
-.btn-outline { border: 1px solid var(--gold); padding: 0.6rem 1.2rem; border-radius: 50px; color: var(--gold) !important; }
+.btn-outline { display: inline-block; line-height: normal; border: 1px solid var(--gold); padding: 0.6rem 1.2rem; border-radius: 50px; color: var(--gold) !important; }
 .btn-outline:hover { background: var(--gold); color: #000 !important; }
 
 /* FIXED MEDIA BACKGROUND */
@@ -553,7 +566,7 @@ body {
 
 /* SCROLL CONTENT CONTAINER */
 .scroll-content { position: relative; z-index: 10; pointer-events: none; }
-.glass-card, .solid-wrapper, .premium-nav, #preloader, .btn-solid, .btn-play-video { pointer-events: auto; }
+.glass-card, .solid-wrapper, .premium-nav, #preloader, .btn-solid, .btn-play-video, .btn-history { pointer-events: auto; }
 
 /* HERO SECTION */
 .hero-content { text-align: center; }
@@ -564,14 +577,36 @@ body {
     margin-bottom: 2rem; backdrop-filter: blur(5px); color: #fff;
 }
 .hero-title {
-    font-size: 8vw; font-weight: 900; letter-spacing: 0.2em;
-    margin: 0; background: linear-gradient(180deg, #ffffff 0%, #a0a0a0 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-size: clamp(3.5rem, 10vw, 8.5rem);
+    font-weight: 900;
+    margin: 0;
     text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 0.95;
+    letter-spacing: 0.05em;
+}
+.title-viet {
+    color: #FFD700;
+    font-weight: 900;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+}
+.title-nam {
+    color: #FFFFFF;
+    font-weight: 900;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
 }
 .hero-subtitle {
-    font-size: 1.5rem; font-weight: 300; letter-spacing: 0.5em;
-    color: var(--gold); text-transform: uppercase; margin-top: -10px;
+    font-size: clamp(0.9rem, 1.8vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: 0.45em;
+    color: #FFB300;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    padding-left: 0.45em;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
 }
 .scroll-indicator {
     position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
@@ -621,7 +656,7 @@ body {
     transition: all 0.3s ease; font-family: inherit; margin: 0;
 }
 .btn-history {
-    border-color: rgba(255, 255, 255, 0.3); color: #fff;
+    border: 1px solid #ffffff; color: #fff; font-weight: 700;
 }
 .btn-history:hover {
     background: rgba(255, 255, 255, 0.1); border-color: #fff;

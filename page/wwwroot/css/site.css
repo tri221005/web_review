@@ -564,6 +564,8 @@ h3, .h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
   color: var(--gold) !important;
 }
 .btn-nav-register {
+  display: inline-block;
+  line-height: normal;
   border: 1px solid var(--gold);
   padding: 0.5rem 1.2rem;
   border-radius: 50px;
