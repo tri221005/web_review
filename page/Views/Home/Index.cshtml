@@ -103,8 +103,11 @@
     <!-- 1. HERO / INTRO -->
     <section class="story-panel align-center" id="scene-1">
         <div class="hero-content">
-            <h1 class="hero-title">VIỆT NAM</h1>
-            <p class="hero-subtitle">Hành Trình Chạm Vào Di Sản</p>
+            <h1 class="hero-title">
+                <span class="title-viet">VIỆT</span>
+                <span class="title-nam">NAM</span>
+            </h1>
+            <p class="hero-subtitle">HÀNH TRÌNH CHẠM VÀO DI SẢN</p>
             <div class="action-buttons justify-center" style="margin-top: 3rem;">
                 <a href="/Destinations" class="btn-solid" style="padding: 1.25rem 3rem;">Khám Phá Ngay</a>
                 <button class="btn-history" onclick="document.getElementById('scene-2').scrollIntoView({behavior: 'smooth'})" style="padding: 1.25rem 3rem;">Xem Hành Trình Di Sản</button>
@@ -564,14 +567,36 @@ body {
     margin-bottom: 2rem; backdrop-filter: blur(5px); color: #fff;
 }
 .hero-title {
-    font-size: 8vw; font-weight: 900; letter-spacing: 0.2em;
-    margin: 0; background: linear-gradient(180deg, #ffffff 0%, #a0a0a0 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-size: clamp(3.5rem, 10vw, 8.5rem);
+    font-weight: 900;
+    margin: 0;
     text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 0.95;
+    letter-spacing: 0.05em;
+}
+.title-viet {
+    color: #FFD700;
+    font-weight: 900;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+}
+.title-nam {
+    color: #FFFFFF;
+    font-weight: 900;
+    text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
 }
 .hero-subtitle {
-    font-size: 1.5rem; font-weight: 300; letter-spacing: 0.5em;
-    color: var(--gold); text-transform: uppercase; margin-top: -10px;
+    font-size: clamp(0.9rem, 1.8vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: 0.45em;
+    color: #FFB300;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    padding-left: 0.45em;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
 }
 .scroll-indicator {
     position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
