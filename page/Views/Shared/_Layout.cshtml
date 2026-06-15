@@ -14,40 +14,40 @@
     <link rel="stylesheet" href="~/page.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body style="background-color: var(--dark-bg); color: var(--text-light); margin: 0; overflow-x: hidden;">
+<body>
     <header>
-        <nav class="premium-nav scrolled" id="navbar" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1050; padding: 1rem 5%; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-            <a href="/" class="nav-brand" style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; text-decoration: none;">
+        <nav class="premium-nav scrolled" id="navbar">
+            <a href="/" class="nav-brand">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <span>Việt Nam</span>
             </a>
-            <button class="mobile-nav-toggle d-lg-none" id="mobileNavToggle" aria-label="Mở menu điều hướng" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">
+            <button class="mobile-nav-toggle d-lg-none" id="mobileNavToggle" aria-label="Mở menu điều hướng">
                 <i class="bi bi-list"></i>
             </button>
-            <ul class="nav-links" id="navLinks" style="list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; align-items: center;">
-                <li><a href="/Home/Index" style="color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease;">Trang Chủ</a></li>
-                <li><a href="/Destinations" style="color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease;">Khám Phá</a></li>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/Home/Index">Trang Chủ</a></li>
+                <li><a href="/Destinations">Khám Phá</a></li>
 
-                <li><a href="/Stories" style="color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;">Câu Chuyện</a></li>
+                <li><a href="/Stories">Câu Chuyện</a></li>
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <li><a href="/Destinations/Saved" style="color: #ccc; text-decoration: none; font-size: 0.9rem;">Yêu Thích</a></li>
-                    <li><a href="/Passport" style="color: var(--gold); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Hộ Chiếu</a></li>
-                    <li><a href="/Profile" style="color: var(--gold); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Hồ Sơ</a></li>
+                    <li><a href="/Destinations/Saved">Yêu Thích</a></li>
+                    <li><a href="/Passport" class="nav-link-gold">Hộ Chiếu</a></li>
+                    <li><a href="/Profile" class="nav-link-gold">Hồ Sơ</a></li>
                     @if (User.IsInRole("Admin"))
                     {
-                        <li><a href="/Admin/Dashboard" style="color: #ff6b6b; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Admin</a></li>
+                        <li><a href="/Admin/Dashboard" class="nav-link-admin">Admin</a></li>
                     }
                     <li>
-                        <form class="form-inline m-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" style="display:inline;">
-                            <button type="submit" style="background: none; border: none; padding: 0; color: #ccc; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: color 0.3s ease;">Đăng Xuất</button>
+                        <form class="form-inline m-0 nav-logout-form" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit">Đăng Xuất</button>
                         </form>
                     </li>
                 }
                 else
                 {
-                    <li><a href="/Identity/Account/Login" style="color: #ccc; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease;">Đăng Nhập</a></li>
-                    <li><a href="/Identity/Account/Register" class="btn-outline" style="border: 1px solid var(--gold); padding: 0.5rem 1.2rem; border-radius: 50px; color: var(--gold) !important; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s ease;">Đăng Ký</a></li>
+                    <li><a href="/Identity/Account/Login">Đăng Nhập</a></li>
+                    <li><a href="/Identity/Account/Register" class="btn-nav-register">Đăng Ký</a></li>
                 }
             </ul>
         </nav>
@@ -76,21 +76,21 @@
         });
     </script>
 
-    <main role="main" style="min-height: 80vh; padding-top: 80px;">
+    <main role="main" class="layout-main">
         @RenderBody()
     </main>
     @await Component.InvokeAsync("NToastNotify")
 
-    <div class="solid-wrapper" style="background: var(--dark-bg); position: relative; z-index: 20; border-top: 1px solid #222;">
-        <footer class="premium-footer" style="padding: 4rem 2rem 2rem; text-align: center;">
+    <div class="solid-wrapper">
+        <footer class="premium-footer">
             <div class="footer-content">
-                <div class="logo-icon" style="color: var(--gold); margin-bottom: 1.5rem;">
+                <div class="logo-icon">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 </div>
-                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: #fff;">Sẵn Sàng Khám Phá?</h2>
-                <p style="font-size: 1.1rem; color: #888; margin-bottom: 0;">Hàng trăm điểm đến và vô vàn câu chuyện văn hóa đang chờ bạn.</p>
+                <h2>Sẵn Sàng Khám Phá?</h2>
+                <p>Hàng trăm điểm đến và vô vàn câu chuyện văn hóa đang chờ bạn.</p>
             </div>
-            <div class="footer-bottom" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #222; font-size: 0.9rem; color: #555; text-transform: uppercase; letter-spacing: 0.1em;">
+            <div class="footer-bottom-custom">
                 <p>&copy; 2026 Hành Trình Việt Nam. Mọi quyền được bảo lưu.</p>
             </div>
         </footer>
@@ -99,10 +99,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <style>
-        .nav-links a:hover, .nav-links button:hover { color: var(--gold) !important; }
-        .btn-outline:hover { background: var(--gold) !important; color: #000 !important; }
-    </style>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

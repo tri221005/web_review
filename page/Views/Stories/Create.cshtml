@@ -5,79 +5,47 @@
     var destinations = ViewBag.Destinations as List<page.Models.Destination> ?? new List<page.Models.Destination>();
 }
 
-<div class="section pt-4" style="max-width: 700px; margin: 0 auto; padding: 0 15px 5rem;">
+@section Styles {
+    <link rel="stylesheet" href="~/css/stories.css" asp-append-version="true" />
+}
+
+<div class="section pt-4 story-create-section">
     <h1 class="text-white fw-bold mb-4 text-center">Viết Câu Chuyện Du Lịch</h1>
-    <div class="card border-0 p-4 p-md-5" style="background: rgba(20,20,25,0.8); border-radius: 16px;">
+    <div class="card border-0 p-4 p-md-5 story-form-card">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             @if (!ViewData.ModelState.IsValid)
             {
-                <div asp-validation-summary="All" class="alert alert-danger" style="background: rgba(220, 53, 69, 0.2); border: 1px solid var(--red); color: white;"></div>
+                <div asp-validation-summary="All" class="alert alert-danger story-alert-danger"></div>
             }
 
             <div class="mb-4">
-                <label class="form-label fw-bold small text-uppercase" style="color: #ccc; letter-spacing: 1px;">Điểm đến</label>
-                <select asp-for="DestinationId" class="form-select form-select-lg shadow-sm custom-dark-input" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
-                    <option value="0" style="background: #111;">-- Chọn điểm đến --</option>
+                <label class="form-label fw-bold small text-uppercase story-form-label">Điểm đến</label>
+                <select asp-for="DestinationId" class="form-select form-select-lg shadow-sm custom-dark-input">
+                    <option value="0" class="custom-dark-option">-- Chọn điểm đến --</option>
                     @foreach (var d in destinations)
                     {
-                        <option value="@d.Id" style="background: #111;">@d.Name</option>
+                        <option value="@d.Id" class="custom-dark-option">@d.Name</option>
                     }
                 </select>
             </div>
             <div class="mb-4">
-                <label asp-for="Title" class="form-label fw-bold small text-uppercase" style="color: #ccc; letter-spacing: 1px;">Tiêu đề</label>
-                <input asp-for="Title" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="Nhập tiêu đề câu chuyện..." style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;" />
+                <label asp-for="Title" class="form-label fw-bold small text-uppercase story-form-label">Tiêu đề</label>
+                <input asp-for="Title" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="Nhập tiêu đề câu chuyện..." />
             </div>
             <div class="mb-4">
-                <label class="form-label fw-bold small text-uppercase" style="color: #ccc; letter-spacing: 1px;">Ảnh đại diện (tải lên)</label>
-                <input type="file" name="imageFile" accept="image/*" class="form-control form-control-lg shadow-sm custom-file-input" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                <label class="form-label fw-bold small text-uppercase story-form-label">Ảnh đại diện (tải lên)</label>
+                <input type="file" name="imageFile" accept="image/*" class="form-control form-control-lg shadow-sm custom-file-input">
             </div>
             <div class="mb-4">
-                <label asp-for="ImageUrl" class="form-label fw-bold small text-uppercase" style="color: #ccc; letter-spacing: 1px;">Hoặc URL ảnh từ web</label>
-                <input asp-for="ImageUrl" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="https://..." style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;" />
+                <label asp-for="ImageUrl" class="form-label fw-bold small text-uppercase story-form-label">Hoặc URL ảnh từ web</label>
+                <input asp-for="ImageUrl" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="https://..." />
             </div>
             <div class="mb-5">
-                <label asp-for="Content" class="form-label fw-bold small text-uppercase" style="color: #ccc; letter-spacing: 1px;">Nội dung</label>
-                <textarea asp-for="Content" rows="8" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="Kể lại trải nghiệm của bạn..." style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; resize: none;"></textarea>
+                <label asp-for="Content" class="form-label fw-bold small text-uppercase story-form-label">Nội dung</label>
+                <textarea asp-for="Content" rows="8" class="form-control form-control-lg shadow-sm custom-dark-input" placeholder="Kể lại trải nghiệm của bạn..."></textarea>
             </div>
-            <button type="submit" class="btn w-100 rounded-pill py-2 fw-bold" style="background: var(--gold); color: #000;">Đăng câu chuyện</button>
+            <button type="submit" class="btn w-100 rounded-pill py-2 fw-bold btn-gold">Đăng câu chuyện</button>
         </form>
     </div>
 </div>
-
-<style>
-    .custom-dark-input:focus, .form-select:focus, .custom-file-input:focus {
-        background-color: rgba(255,255,255,0.08) !important;
-        border-color: var(--gold) !important;
-        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important;
-        color: white !important;
-    }
-    .custom-dark-input::placeholder {
-        color: rgba(255,255,255,0.4) !important;
-    }
-    .custom-file-input::-webkit-file-upload-button {
-        background-color: rgba(255,255,255,0.1);
-        color: white;
-        border: none;
-        border-right: 1px solid rgba(255,255,255,0.1);
-        padding: 0.5rem 1rem;
-        margin-right: 1rem;
-        transition: all 0.3s;
-    }
-    .custom-file-input::-webkit-file-upload-button:hover {
-        background-color: rgba(255,255,255,0.2);
-    }
-    .custom-file-input::file-selector-button {
-        background-color: rgba(255,255,255,0.1);
-        color: white;
-        border: none;
-        border-right: 1px solid rgba(255,255,255,0.1);
-        padding: 0.5rem 1rem;
-        margin-right: 1rem;
-        transition: all 0.3s;
-    }
-    .custom-file-input::file-selector-button:hover {
-        background-color: rgba(255,255,255,0.2);
-    }
-</style>

@@ -1,0 +1,69 @@
+/* ─── Passport Page Styles ─── */
+
+.passport-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 15px 5rem;
+}
+
+.passport-cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 3px solid var(--gold);
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.passport-title {
+    font-size: 1.8rem;
+}
+
+.badge-passport-explorer {
+    background: var(--gold);
+    color: #000;
+    font-size: 0.85rem;
+}
+
+.stamp-col {
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+}
+
+.stamp-card {
+    background: rgba(20, 20, 25, 0.8);
+    border-radius: 20px;
+}
+
+.stamp-card.earned {
+    border: 2px solid var(--gold) !important;
+}
+
+.stamp-card.unearned {
+    border: 2px dashed rgba(255, 255, 255, 0.15) !important;
+}
+
+.stamp-circle {
+    width: 90px;
+    height: 90px;
+}
+
+.stamp-circle.earned {
+    background: rgba(212, 175, 55, 0.2);
+    border: 2px solid var(--gold);
+}
+
+.stamp-circle.unearned {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-continue-explore {
+    background: var(--gold);
+    color: #000;
+    transition: all 0.3s ease;
+}
+
+.btn-continue-explore:hover {
+    background: var(--gold-hover);
+    color: #000;
+}

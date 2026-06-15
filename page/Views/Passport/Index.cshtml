@@ -4,15 +4,19 @@
     Layout = "_Layout";
 }
 
-<div class="section pt-4" style="max-width: 900px; margin: 0 auto; padding: 0 15px 5rem;">
+@section Styles {
+    <link rel="stylesheet" href="~/css/passport.css" asp-append-version="true" />
+}
+
+<div class="section pt-4 passport-container">
     <div class="text-center mb-5">
-        <div class="passport-cover mx-auto p-5 rounded-4 mb-4" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border: 3px solid var(--gold); max-width: 500px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <div class="passport-cover mx-auto p-5 rounded-4 mb-4">
             <div class="text-uppercase letter-spacing-2 small text-muted mb-2">Hành Trình Việt Nam</div>
-            <h1 class="text-white fw-bold mb-1" style="font-size: 1.8rem;">HỘ CHIẾU DI SẢN</h1>
+            <h1 class="text-white fw-bold mb-1 passport-title">HỘ CHIẾU DI SẢN</h1>
             <div class="text-warning fw-bold fs-4 mb-3">@(Model.FullName ?? Model.UserName)</div>
             @if (Model.HasExplorerBadge)
             {
-                <span class="badge rounded-pill px-3 py-2" style="background: var(--gold); color: #000; font-size: 0.85rem;">
+                <span class="badge rounded-pill px-3 py-2 badge-passport-explorer">
                     <i class="bi bi-trophy-fill me-1"></i> Nhà Thám Hiểm Việt Nam
                 </span>
             }
@@ -23,9 +27,9 @@
     <div class="row g-4 justify-content-center">
         @foreach (var stamp in Model.Stamps)
         {
-            <div class="col-6 col-md-4 col-lg-auto" style="flex: 1; min-width: 180px; max-width: 220px;">
-                <div class="card border-0 h-100 text-center p-4 @(stamp.IsEarned ? "" : "opacity-50")" style="background: rgba(20,20,25,0.8); border-radius: 20px; border: 2px @(stamp.IsEarned ? "solid var(--gold)" : "dashed rgba(255,255,255,0.15)") !important;">
-                    <div class="stamp-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 90px; height: 90px; background: @(stamp.IsEarned ? "rgba(212,175,55,0.2)" : "rgba(255,255,255,0.05)"); border: 2px solid @(stamp.IsEarned ? "var(--gold)" : "rgba(255,255,255,0.2)");">
+            <div class="col-6 col-md-4 col-lg-auto stamp-col">
+                <div class="card border-0 h-100 text-center p-4 stamp-card @(stamp.IsEarned ? "earned" : "unearned opacity-50")">
+                    <div class="stamp-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle @(stamp.IsEarned ? "earned" : "unearned")">
                         <i class="bi @stamp.Icon fs-1 @(stamp.IsEarned ? "text-warning" : "text-muted")"></i>
                     </div>
                     <h5 class="text-white fw-bold">@stamp.Region</h5>
@@ -44,7 +48,7 @@
 
     <div class="text-center mt-5">
         <p class="text-muted small mb-3">Lưu, đánh giá hoặc đánh dấu "Đã đến" tại bất kỳ điểm nào để nhận con dấu vùng miền.</p>
-        <a asp-controller="Destinations" asp-action="Index" class="btn rounded-pill px-4 fw-bold" style="background: var(--gold); color: #000;">
+        <a asp-controller="Destinations" asp-action="Index" class="btn rounded-pill px-4 fw-bold btn-continue-explore">
             <i class="bi bi-compass me-1"></i> Tiếp tục khám phá
         </a>
     </div>
