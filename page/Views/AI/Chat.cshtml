@@ -1,0 +1,222 @@
+@{
+    ViewData["Title"] = "AI Trợ Lý Du Lịch Thông Minh";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Chat Container -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot"></i> AI Assistant - Trợ Lý Du Lịch</h5>
+                </div>
+                <div class="card-body" style="height: 500px; overflow-y: auto;" id="chatContainer">
+                    <div class="text-center text-muted mb-3">
+                        <i class="fas fa-comments fa-3x mb-2"></i>
+                        <p>Hỏi tôi về điểm đến, lộ trình, kinh nghiệm du lịch Việt Nam!</p>
+                    </div>
+                    <div id="chatMessages"></div>
+                </div>
+                <div class="card-footer">
+                    <form id="chatForm" class="d-flex">
+                        <input type="text" id="messageInput" class="form-control me-2" 
+                               placeholder="Nhập câu hỏi của bạn..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Gửi
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="fas fa-bolt"></i> Gợi Ý Nhanh</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success btn-sm quick-question" 
+                                data-question="Gợi ý cho tôi 3 điểm đến đẹp nhất miền Bắc vào mùa thu">
+                            🍂 Điểm đến miền Bắc mùa thu
+                        </button>
+                        <button class="btn btn-outline-success btn-sm quick-question"
+                                data-question="Lịch trình 3 ngày 2 đêm ở Đà Nẵng với ngân sách 5 triệu">
+                            🏖️ Lịch trình Đà Nẵng 3 ngày
+                        </button>
+                        <button class="btn btn-outline-success btn-sm quick-question"
+                                data-question="Những món ăn đặc sản nên thử ở Huế">
+                            🍜 Đặc sản Huế
+                        </button>
+                        <button class="btn btn-outline-success btn-sm quick-question"
+                                data-question="Kinh nghiệm du lịch Phú Quốc tự túc">
+                            🏝️ Phú Quốc tự túc
+                        </button>
+                        <button class="btn btn-outline-success btn-sm quick-question"
+                                data-question="Địa điểm check-in sống ảo đẹp nhất Sài Gòn">
+                            📸 Check-in Sài Gòn
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-magic"></i> Tính Năng AI</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a href="@Url.Action("GenerateItinerary", "AI")" class="text-decoration-none">
+                                <i class="fas fa-route"></i> Tạo lộ trình tự động
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="@Url.Action("Recommendations", "AI")" class="text-decoration-none">
+                                <i class="fas fa-star"></i> Gợi ý cá nhân hóa
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="@Url.Action("MyItineraries", "AI")" class="text-decoration-none">
+                                <i class="fas fa-bookmark"></i> Lộ trình của tôi
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+
+    // Add message to chat
+    function addMessage(content, isUser = false) {
+        const div = document.createElement('div');
+        div.className = `mb-3 ${isUser ? 'text-end' : 'text-start'}`;
+        div.innerHTML = `
+            <div class="d-inline-block p-3 rounded ${isUser ? 'bg-primary text-white' : 'bg-light'}" 
+                 style="max-width: 80%; text-align: left;">
+                ${content}
+            </div>
+        `;
+        chatMessages.appendChild(div);
+        document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+    }
+
+    // Show loading indicator
+    function showLoading() {
+        const div = document.createElement('div');
+        div.id = 'loadingIndicator';
+        div.className = 'mb-3 text-start';
+        div.innerHTML = `
+            <div class="d-inline-block p-3 rounded bg-light">
+                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                <span class="ms-2">Đang suy nghĩ...</span>
+            </div>
+        `;
+        chatMessages.appendChild(div);
+        document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+    }
+
+    // Hide loading indicator
+    function hideLoading() {
+        const loading = document.getElementById('loadingIndicator');
+        if (loading) loading.remove();
+    }
+
+    // Send message
+    async function sendMessage(message) {
+        if (!message.trim()) return;
+
+        addMessage(message, true);
+        messageInput.value = '';
+        showLoading();
+
+        try {
+            const response = await fetch('@Url.Action("SendMessage", "AI")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            hideLoading();
+
+            if (data.success) {
+                // Convert markdown-like formatting to HTML
+                let formattedResponse = data.response
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                addMessage(formattedResponse, false);
+            } else {
+                addMessage(`<span class="text-danger">${data.message}</span>`, false);
+            }
+        } catch (error) {
+            hideLoading();
+            addMessage(`<span class="text-danger">Lỗi: ${error.message}</span>`, false);
+        }
+    }
+
+    // Form submit
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendMessage(messageInput.value);
+    });
+
+    // Quick questions
+    document.querySelectorAll('.quick-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const question = btn.getAttribute('data-question');
+            sendMessage(question);
+        });
+    });
+
+    // Load conversation history on page load
+    async function loadHistory() {
+        try {
+            const response = await fetch('@Url.Action("GetHistory", "AI")');
+            const data = await response.json();
+            
+            if (data.success && data.history.length > 0) {
+                // Clear welcome message
+                chatMessages.innerHTML = '';
+                
+                data.history.reverse().forEach(msg => {
+                    addMessage(msg.message, true);
+                    let formattedResponse = msg.aiResponse
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                    addMessage(formattedResponse, false);
+                });
+            }
+        } catch (error) {
+            console.log('Could not load history:', error);
+        }
+    }
+
+    // Load history on page load
+    loadHistory();
+</script>
+}
+
+@section Styles {
+<style>
+    #chatContainer {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .quick-question:hover {
+        transform: translateX(5px);
+        transition: transform 0.2s;
+    }
+</style>
+}

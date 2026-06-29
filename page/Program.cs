@@ -33,6 +33,7 @@ builder.Services.AddScoped<IPassportService, PassportService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IProfanityFilterService, ProfanityFilterService>();
+builder.Services.AddHttpClient<IAIAssistantService, AIAssistantService>();
 
 builder.Services.AddControllersWithViews()
     .AddNToastNotifyToastr(new ToastrOptions

@@ -1,0 +1,197 @@
+@model IEnumerable<page.Models.Destination>
+
+@{
+    ViewData["Title"] = "Gợi Ý Cho Bạn";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm bg-gradient text-white" 
+                 style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body p-4">
+                    <h1 class="mb-2"><i class="fas fa-magic"></i> Gợi Ý Cá Nhân Hóa</h1>
+                    <p class="lead mb-0">Dựa trên sở thích và lịch sử của bạn, đây là những điểm đến phù hợp nhất!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-compass fa-5x text-muted mb-3"></i>
+            <h4 class="text-muted">Chưa có gợi ý nào</h4>
+            <p class="text-muted">Hãy trò chuyện với AI hoặc khám phá thêm để nhận gợi ý cá nhân hóa!</p>
+            <a href="@Url.Action("Chat", "AI")" class="btn btn-primary btn-lg">
+                <i class="fas fa-comments"></i> Chat Với AI
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Preference Insights -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-chart-line"></i> 
+                    <strong>Gợi ý dựa trên:</strong>
+                    <span id="preference-tags">Sở thích của bạn đang được phân tích...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Destinations Grid -->
+        <div class="row">
+            @foreach (var destination in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm hover-lift">
+                        @if (!string.IsNullOrEmpty(destination.ImageUrl))
+                        {
+                            <img src="@destination.ImageUrl" 
+                                 class="card-img-top" 
+                                 alt="@destination.Name"
+                                 style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-white"></i>
+                            </div>
+                        }
+                        
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">@destination.Name</h5>
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-star"></i> @destination.AverageRating.ToString("0.0")
+                                </span>
+                            </div>
+                            
+                            <p class="card-text text-muted small">
+                                <i class="fas fa-map-marker-alt"></i> @destination.Location
+                                @if (!string.IsNullOrEmpty(destination.Type))
+                                {
+                                    <span class="ms-2">• @destination.Type</span>
+                                }
+                            </p>
+                            
+                            <p class="card-text">@destination.Description</p>
+                            
+                            <div class="mb-3">
+                                <span class="badge bg-success">
+                                    <i class="fas fa-wallet"></i> @destination.EstimatedCost.ToString("N0") VNĐ
+                                </span>
+                                @if (destination.ReviewCount > 0)
+                                {
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-comment"></i> @destination.ReviewCount reviews
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- AI Match Score (Placeholder) -->
+                            <div class="progress mb-3" style="height: 8px;">
+                                @{
+                                    var matchScore = new Random().Next(75, 100); // Placeholder
+                                }
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: @matchScore%" 
+                                     aria-valuenow="@matchScore" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    <small>@matchScore% phù hợp</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-white border-0">
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Details", "Destinations", new { id = destination.Id })" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Xem Chi Tiết
+                                </a>
+                                <button class="btn btn-outline-success" onclick="saveDestination(@destination.Id)">
+                                    <i class="fas fa-bookmark"></i> Lưu Lại
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Refresh Recommendations -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-outline-primary btn-lg" onclick="refreshRecommendations()">
+                    <i class="fas fa-sync-alt"></i> Làm Mới Gợi Ý
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    // Load user preferences
+    async function loadPreferences() {
+        try {
+            // TODO: Implement API to get user preferences
+            const tags = ['Miền Bắc', 'Biển', 'Ẩm thực']; // Placeholder
+            document.getElementById('preference-tags').innerHTML = 
+                tags.map(t => `<span class="badge bg-primary me-1">${t}</span>`).join('');
+        } catch (error) {
+            console.error('Error loading preferences:', error);
+        }
+    }
+
+    // Save destination
+    async function saveDestination(id) {
+        try {
+            const response = await fetch(`/Destinations/Save/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                }
+            });
+            
+            if (response.ok) {
+                alert('Đã lưu điểm đến!');
+            } else {
+                alert('Cần đăng nhập để lưu điểm đến');
+            }
+        } catch (error) {
+            alert('Lỗi: ' + error.message);
+        }
+    }
+
+    // Refresh recommendations
+    async function refreshRecommendations() {
+        window.location.reload();
+    }
+
+    // Load on page load
+    loadPreferences();
+</script>
+}
+
+@section Styles {
+<style>
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+</style>
+}
