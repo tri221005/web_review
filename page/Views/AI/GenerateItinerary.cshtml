@@ -1,0 +1,150 @@
+@{
+    ViewData["Title"] = "Tạo Lộ Trình Du Lịch Với AI";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-gradient bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-magic"></i> AI Tạo Lộ Trình Tự Động</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form id="itineraryForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Bạn muốn đi đâu?</label>
+                            <textarea id="prompt" class="form-control" rows="3" 
+                                      placeholder="Ví dụ: Khám phá vẻ đẹp của Đà Nẵng, Hội An với những bãi biển tuyệt đẹp và ẩm thực phong phú..." required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Số ngày</label>
+                                <select id="durationDays" class="form-select">
+                                    <option value="2">2 ngày 1 đêm</option>
+                                    <option value="3" selected>3 ngày 2 đêm</option>
+                                    <option value="4">4 ngày 3 đêm</option>
+                                    <option value="5">5 ngày 4 đêm</option>
+                                    <option value="7">7 ngày 6 đêm</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Ngày bắt đầu</label>
+                                <input type="date" id="startDate" class="form-control" 
+                                       value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ngân sách dự kiến (VNĐ)</label>
+                            <select id="budget" class="form-select">
+                                <option value="3000000">3.000.000 VNĐ (Tiết kiệm)</option>
+                                <option value="5000000" selected>5.000.000 VNĐ (Trung bình)</option>
+                                <option value="10000000">10.000.000 VNĐ (Thoải mái)</option>
+                                <option value="20000000">20.000.000 VNĐ (Cao cấp)</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Mẹo:</strong> Càng mô tả chi tiết, lộ trình càng chính xác! 
+                            Bạn có thể đề cập đến sở thích như: ẩm thực, chụp ảnh, khám phá văn hóa...
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-wand-magic-sparkles"></i> Tạo Lộ Trình Ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center mt-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                <h5 class="mt-3">AI đang phân tích và tạo lộ trình cho bạn...</h5>
+                <p class="text-muted">Điều này có thể mất 30-60 giây</p>
+            </div>
+
+            <!-- Result State -->
+            <div id="resultState" class="mt-4" style="display: none;">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Hoàn thành!</strong> Lộ trình của bạn đã được tạo.
+                </div>
+                <a href="#" id="viewItineraryBtn" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-eye"></i> Xem Chi Tiết Lộ Trình
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('itineraryForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const prompt = document.getElementById('prompt').value;
+        const durationDays = parseInt(document.getElementById('durationDays').value);
+        const startDate = document.getElementById('startDate').value;
+        const budget = parseFloat(document.getElementById('budget').value);
+
+        // Show loading
+        document.getElementById('itineraryForm').style.display = 'none';
+        document.getElementById('loadingState').style.display = 'block';
+
+        try {
+            const response = await fetch('@Url.Action("GenerateItinerary", "AI")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    durationDays: durationDays,
+                    startDate: startDate,
+                    budget: budget
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById('loadingState').style.display = 'none';
+
+            if (data.success) {
+                document.getElementById('resultState').style.display = 'block';
+                document.getElementById('viewItineraryBtn').href = `/AI/ViewItinerary/${data.itineraryId}`;
+            } else {
+                alert('Lỗi: ' + data.message);
+                document.getElementById('itineraryForm').style.display = 'block';
+            }
+        } catch (error) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('itineraryForm').style.display = 'block';
+            alert('Lỗi kết nối: ' + error.message);
+        }
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').setAttribute('min', today);
+</script>
+}
+
+@section Styles {
+<style>
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .form-label {
+        color: #495057;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+</style>
+}
