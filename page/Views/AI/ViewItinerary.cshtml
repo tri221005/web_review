@@ -1,0 +1,230 @@
+@model page.Models.Itinerary
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm bg-gradient text-white" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="mb-0">@Model.Title</h1>
+                        @if (Model.IsAIGenerated)
+                        {
+                            <span class="badge bg-warning text-dark fs-6">
+                                <i class="fas fa-robot"></i> AI Generated
+                            </span>
+                        }
+                    </div>
+                    <p class="lead mb-3">@Model.Description</p>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-calendar-alt fa-lg me-2"></i>
+                            <span>@Model.DurationDays ngày</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-wallet fa-lg me-2"></i>
+                            <span>@Model.EstimatedBudget.ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-signal fa-lg me-2"></i>
+                            <span>@Model.DifficultyLevel</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-calendar-check fa-lg me-2"></i>
+                            <span>@Model.StartDate.ToString("dd/MM/yyyy") - @Model.EndDate.ToString("dd/MM/yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <button class="btn btn-outline-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> In Lộ Trình
+                </button>
+                <button class="btn btn-outline-success">
+                    <i class="fas fa-share-alt"></i> Chia Sẻ
+                </button>
+                <button class="btn btn-outline-info">
+                    <i class="fas fa-download"></i> Xuất PDF
+                </button>
+                <a href="@Url.Action("MyItineraries", "AI")" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay Lại
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Itinerary Days -->
+    <div class="row">
+        <div class="col-12">
+            @foreach (var day in Model.Days.OrderBy(d => d.DayNumber))
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-sun"></i> Ngày @day.DayNumber: @day.Title
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(day.Description))
+                        {
+                            <p class="text-muted mb-3">@day.Description</p>
+                        }
+
+                        <!-- Timeline of Activities -->
+                        <div class="timeline">
+                            @foreach (var activity in day.Activities.OrderBy(a => a.StartTime))
+                            {
+                                var badgeClass = activity.ActivityType switch
+                                {
+                                    "Visit" => "bg-info",
+                                    "Eat" => "bg-success",
+                                    "Rest" => "bg-warning",
+                                    "Transport" => "bg-secondary",
+                                    _ => "bg-primary"
+                                };
+
+                                <div class="d-flex mb-4">
+                                    <div class="me-3 text-center">
+                                        <div class="badge @badgeClass rounded-circle p-3" style="width: 50px; height: 50px;">
+                                            @{
+                                                var icon = activity.ActivityType switch
+                                                {
+                                                    "Visit" => "fa-eye",
+                                                    "Eat" => "fa-utensils",
+                                                    "Rest" => "fa-bed",
+                                                    "Transport" => "fa-car",
+                                                    _ => "fa-star"
+                                                };
+                                            }
+                                            <i class="fas @icon fa-lg"></i>
+                                        </div>
+                                        <div class="mt-1 small text-muted">
+                                            @activity.StartTime.ToString(@"hh\:mm") - @activity.EndTime.ToString(@"hh\:mm")
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="card border-0 bg-light">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h5 class="mb-1">@activity.Title</h5>
+                                                        <p class="mb-2 text-muted">@activity.Description</p>
+                                                        @if (activity.Destination != null)
+                                                        {
+                                                            <a href="@Url.Action("Details", "Destinations", new { id = activity.Destination.Id })" 
+                                                               class="badge bg-primary text-decoration-none">
+                                                                <i class="fas fa-map-marker-alt"></i> @activity.Destination.Name
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <span class="badge @badgeClass">@activity.ActivityType</span>
+                                                        @if (activity.EstimatedCost > 0)
+                                                        {
+                                                            <div class="mt-2 fw-bold text-success">
+                                                                @activity.EstimatedCost.ToString("N0") VNĐ
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(activity.Notes))
+                                                {
+                                                    <div class="mt-2 small text-muted fst-italic">
+                                                        <i class="fas fa-sticky-note"></i> @activity.Notes
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm bg-light">
+                <div class="card-body">
+                    <h5><i class="fas fa-calculator"></i> Tổng Kết Chi Phí</h5>
+                    <hr>
+                    @{
+                        var totalCost = Model.Days.Sum(d => d.Activities.Sum(a => a.EstimatedCost));
+                    }
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng chi phí hoạt động:</span>
+                        <strong>@totalCost.ToString("N0") VNĐ</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Dự toán ban đầu:</span>
+                        <strong>@Model.EstimatedBudget.ToString("N0") VNĐ</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Còn dư:</span>
+                        <strong class="text-success">@(Model.EstimatedBudget - totalCost).ToString("N0") VNĐ</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm bg-light">
+                <div class="card-body">
+                    <h5><i class="fas fa-lightbulb"></i> Gợi Ý Thêm</h5>
+                    <ul class="mb-0">
+                        <li>Đặt phòng khách sạn trước ít nhất 2 tuần</li>
+                        <li>Mua bảo hiểm du lịch cho chuyến đi</li>
+                        <li>Kiểm tra thời tiết trước khi khởi hành</li>
+                        <li>Sao lưu các giấy tờ quan trọng</li>
+                        <li>Chuẩn bị thuốc men cá nhân</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 35px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e0e0e0;
+    }
+
+    @@media print {
+        .btn-group, .no-print {
+            display: none !important;
+        }
+        
+        .card {
+            break-inside: avoid;
+        }
+    }
+</style>
+}
